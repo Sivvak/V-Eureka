@@ -54,27 +54,27 @@ ks.staniszewski@uw.edu.pl
 ...
 
 \section{Experiments}
-The main goal of our project is to build upon ideas presented in the Eureka paper~\cite{eureka}. We would like to leverage multimodal abilities of current SoTA LLMs and try to get even higher efficiency than in the referenced paper.
+The main goal of our project is to build upon ideas presented in the \textit{Eureka} paper~\cite{eureka}. We would like to leverage the multimodal abilities of current SoTA LLMs and try to get even higher efficiency than in the referenced paper.
 
-In the original work, Eureka was compared to L2R~\cite{l2r}, human-written rewards created by active reinforcement learning researchers and sparse  rewards (success/fail). \textbf{The main purpose of our experiments is to compare multimodal Eureka to original Eureka itself.} Because Eureka has already been compared to the most important baselines, we do not see a reason to check other baselines. Our goal is to get better results than in original paper by using another modality.
+In the original work, \textit{Eureka} was compared with L2R~\cite{l2r}, human-written rewards created by active reinforcement learning researchers, and sparse rewards (success/failure). \textbf{The main purpose of our experiments is to compare \textit{Multimodal Eureka} with the original \textit{Eureka} itself.} Because \textit{Eureka} has already been compared with the aforementioned baselines, we do not see a reason to check other baselines. We aim to achieve better results than in the original paper by leveraging the power of computer vision, particularly in terms of spatial understanding.
 
-To check the results,, we will conduct a series of experiments.
+To check the results, we will conduct a series of experiments.
 
 \begin{itemize}
-    \item We will calculate \textit{Success Rate} for both algorithms for multiple environments including the ones included in the original paper (e.g. \textit{Isaac Gym}~\cite{isaac_gym}).
-    \item We will test different types of prompts for image analysis in \textit{Multimodal Eureka} and choose the best one in terms of average \textit{ success rate}.
-    \item The experiments will probably require a large model, so the choice of LLM depends on what we can access. We will consider using multimodal \textit{Gemini} and \textit{GPT} models.
-    \item We will experiment with different number of input of images (e.g. last few frames).
-    \item We will check the impact of image quality on \textit{Success Rate}.
+    \item We will calculate \textit{Success Rate} for both algorithms for multiple environments, including those used in the original paper (e.g. \textit{Isaac Gym}~\cite{isaac_gym}).
+    \item We will test different types of prompts for image analysis in \textit{Multimodal Eureka} and choose the best one in terms of the average \textit{Success Rate}.
+    \item The experiments will probably require a large model, so our choice of LLM will depend on what we can access. We will consider using multimodal \textit{Gemini} and \textit{GPT} models.
+    \item We will experiment with different numbers of input images (e.g. last few frames).
+    \item We will check the impact of image quality on the \textit{Success Rate}.
 \end{itemize}
 
-We would like to finish with the best possible solution. The main challenge will be to generate prompts that will allow the model to extract the most important information from the images. The second challenge is to make the solution as general as possible. Original \textit{Eureka} uses the same prompts for each environment, and we would like to fulfill this requirement.
+Our goal is to find the best possible solution. The primary challenge lies in creating prompts that will enable the model to extract the most crucial information from the images. The second challenge is to make the solution as general as possible. The original \textit{Eureka} uses the same set of prompts for each environment, and we would like to fulfill this requirement too.
 
-To explain to the reader what is the aim of \textit{image prompts}, let us show an example of what a simplified version of prompt could look like:
+To explain to the reader what the aim of \textit{image prompts} is, let us show an example of what a simplified version of a prompt could look like:
 \\\\
-\texttt{Based on input image and instructions from initial\_system prompt~\footnote{initial\_system prompt is a fragment from source code repository~\cite{eureka_repo} describing an agent his role and expected output}, try to create a reward function. Take into consideration physics laws and try to connect variable names from source code with what you see in the picture.}
+\texttt{Based on an input image and instructions from the initial\_system prompt~\footnote{initial\_system prompt is a fragment from source code repository~\cite{eureka_repo} describing an agent his role and expected output}, create an optimal reward function, which will allow the agent to solve the environment efficiently. Take into consideration the laws of physics and try to connect variable names from the source code with what you see in the provided pictures.}
 \\\\
-Different prompts can lead to unexpected behaviors and we will list the most interesting observations. If we get meaningful results for situations with clear physcial explanation, we will list them in final report as well.
+Different prompts can lead to various unexpected behaviors. Therefore, we will try to identify such cases and list the most interesting observations. If we get meaningful results for situations with a clear physical explanation, we will list them in the final report as well.
 
 
 \begin{thebibliography}{9}
