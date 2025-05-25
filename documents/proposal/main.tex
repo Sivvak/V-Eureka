@@ -17,7 +17,7 @@
 \begin{tabular}{cc}
      \textbf{Łukasz Łopacki} & \textbf{Szymon Pobłocki} \\
      Unversity of Warsaw & University of Warsaw \\
-     ll439936@students.mimuw.edu.pl & sp438679@students.mimuw.edu.pl
+     ll439936@students.mimuw.edu.pl & s.poblocki@student.uw.edu.pl
      \\\\
      \textbf{Paweł Siwak} & \textbf{Jakub Winiarski} \\
      Unversity of Warsaw & University of Warsaw \\
@@ -42,13 +42,20 @@ ks.staniszewski@uw.edu.pl
 \begin{minipage}{0.90\linewidth}
 \small
 
-...
+Eureka is a recent framework where large language models generate reward functions for reinforcement learning agents using only code-level environment descriptions. We want to extend this approach by introducing \textbf{Multimodal Eureka}, which supplements the model with visual input to improve its intuitive understanding of tasks. This mimics how humans better comprehend situations when both visual and textual information are available. We plan on evaluating our method on several control environments, assesing whether visual context can lead to higher-quality rewards and improved success rates in complex tasks.
 
 \end{minipage}
 \end{center}
 
 \section{Introduction}
-...
+Large language models have demonstrated impressive capabilities as semantic planners for high-level decision-making tasks. Recently, effort has been made to utilise them for low-level motor control—such as dexterous manipulation and precision tasks—remains. One example of such work is the Eureka framework \cite{eureka} that addresses part of this gap by using LLMs to automatically generate and evolve reward functions through in-context learning and evolutionary optimization.
+
+Eureka has been shown to outperform human-crafted rewards on 83\% of 29 benchmark tasks, including several involving hand-based control, without requiring task-specific templates or prior tuning. Despite its success, Eureka operates exclusively on internal state inputs (e.g., joint angles, velocities), which limits its effectiveness in tasks where visual perception plays a central role.
+
+In many real-world robotic applications, visual input is essential for interacting with objects in unstructured environments, resolving occlusions, and aligning actions based on external context. To address this limitation, we propose to extend Eureka with visual capabilities—enabling it to generate and refine reward functions that consider visual observations in addition to internal state.
+
+We call this extension \textbf{Multimodal Eureka}. Our approach augments the reward design process with visual inputs by leveraging multimodal large language models capable of interpreting both code and image data. While most relevant information can theoretically be inferred from environment code and variable names, we hypothesize that visual representations help the model build a more intuitive understanding of the task—similarly to how a human benefits from seeing a situation rather than imagining it solely from description. We hypothesize that this added context can improve the model’s ability to generate more aligned and effective reward functions in tasks where spatial reasoning or object interaction plays a key role.
+
 
 \section{Related Work}
 Recently, increasingly powerful large language models are being developed, like OpenAI GPT-4 \cite{GPT-4} or Gemini \cite{Gemini}. One area in which such models can be utilized is robot control. In a work done at Microsoft \cite{Microsoft}, a model is prompted to steer a robot via generated code to accomplish a given task, with model having a textual description of the environment at its disposal. 
