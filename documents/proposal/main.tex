@@ -51,7 +51,11 @@ ks.staniszewski@uw.edu.pl
 ...
 
 \section{Related Work}
-...
+Recently, increasingly powerful large language models are being developed, like OpenAI GPT-4 \cite{GPT-4} or Gemini \cite{Gemini}. One area in which such models can be utilized is robot control. In a work done at Microsoft \cite{Microsoft}, a model is prompted to steer a robot via generated code to accomplish a given task, with model having a textual description of the environment at its disposal. 
+
+LLMs like GPT-4 now often have auxiliary capabilities, such as also accepting additional image data, which is utilized to increase the accuracy of LLMs in robot control tasks. For instance, the work \cite{TUDelft}, is a simple expansion of the previously quoted Microsoft paper, while a more recent article in Nature \cite{Nature} is a more advanced framework for steering robots, also utilizing GPT-4 with image data.
+
+A different way to utilize LLMs for such tasks is to have them design rewards for Reinforcement Learning programs, rather than steer the robot directly. Since the publication of the seminal Eureka paper \cite{eureka}, which describes a framework for reward design many new frameworks aiming to alleviate some of Eureka's flaws have been proposed. They include frameworks such as CARD \cite{card}, which attempts to minimize token usage in comparison with Eureka, or Text2Reward \cite{Text2Reward}, which writes code for rewards directly instead of using APIs. However, to our knowledge, no attempts have been made to supplement Eureka with image data have been made, which appears to us to be a worthwhile endeavour. 
 
 \section{Experiments}
 The main goal of our project is to build upon ideas presented in the \textit{Eureka} paper~\cite{eureka}. We would like to leverage the multimodal abilities of current SoTA LLMs and try to get even higher efficiency than in the referenced paper.
@@ -88,6 +92,44 @@ David Hoeller, Nikita Rudin, Arthur Allshire, Ankur Handa, et al. \emph{Isaac gy
 gpu-based physics simulation for robot learning}. arXiv preprint arXiv:2108.10470, 2021.
 \bibitem{eureka_repo}
 Yecheng Jason Ma and William Liang, \emph{Eureka Repository on GitHub}, https://github.com/eureka-research/Eureka
+
+\bibitem{GPT-4}
+OpenAI,
+\href{https://arxiv.org/abs/2303.08774}{\emph{Gpt-4 technical report}},
+Preprint,
+arXiv:2303.08774.
+
+\bibitem{Microsoft}
+N. Wake, A. Kanehira, K. Sasabuchi, J. Takamatsu and K. Ikeuchi, 
+\href{https://ieeexplore.ieee.org/document/10235949}{\emph{ChatGPT Empowered Long-Step Robot Control in Various Environments: A Case Application}},
+in IEEE Access, vol. 11, pp. 95060-95078, 2023, 
+doi: 10.1109/ACCESS.2023.3310935.
+
+\bibitem{Nature}
+Mon-Williams, R., Li, G., Long, R. et al. 
+\href{https://doi.org/10.1038/s42256-025-01005-x}{\emph{Embodied large language models enable robots to complete complex tasks in unpredictable environments.}}
+Nat Mach Intell 7, 592–601 (2025). 
+
+\bibitem{TUDelft}
+L.E. Verbaan et al.
+\href{https://repository.tudelft.nl/record/uuid:2944a8e1-0a54-492b-af63-193a7ac11db8#title}{Perception and Control with Large Language Models in Robotic Manipulation}
+Master Thesis at TUDelft, 2024
+
+\bibitem{Gemini}
+Gemini Team Google,
+\href{https://arxiv.org/abs/2312.11805}{\emph{Gemini: A Family of Highly Capable Multimodal Models}},
+arXiv:2312.11805
+
+\bibitem{card}
+Shengjie Sun, Runze Liu, Jiafei Lyu, Jing-Wen Yang, Liangpeng Zhang, Xiu Li,
+\href{https://doi.org/10.48550/arXiv.2410.14660}{\emph{A Large Language Model-Driven Reward Design Framework via Dynamic Feedback for Reinforcement Learning}.}
+arXiv:2410.14660, 2024
+
+\bibitem{Text2Reward}
+Tianbao Xie, Siheng Zhao, Chen Henry Wu, Yitao Liu, Qian Luo, Victor Zhong, Yanchao Yang, Tao Yu,
+\href{https://doi.org/10.48550/arXiv.2309.11489}{\emph{Text2Reward: Reward Shaping with Language Models for Reinforcement Learning}},
+arXiv:2309.11489 2023,
+
 \end{thebibliography}
 
 \end{document}
