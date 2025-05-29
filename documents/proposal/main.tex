@@ -22,11 +22,11 @@
      \textbf{Paweł Siwak} & \textbf{Jakub Winiarski} \\
      Unversity of Warsaw & University of Warsaw \\
      pl.siwak@student.uw.edu.pl & jj.winiarski@student.uw.edu.pl
+     \\\\
+     \textbf{Konrad Staniszewski\footnote{First supervisor}}  & \textbf{Paweł Budzianowski\footnote{Second supervisor}}\\
+     University of Warsaw & University of Warsaw\\
+     ks.staniszewski@uw.edu.pl & budzianowski@gmail.com
 \end{tabular}
-\\\\
-\textbf{Konrad Staniszewski\footnote{Project supervisor}} \\
-University of Warsaw \\
-ks.staniszewski@uw.edu.pl
 }
 \date{\today}
 
@@ -65,7 +65,7 @@ In the original work, \textit{Eureka} was compared with L2R~\cite{l2r}, human-wr
 To check the results, we will conduct a series of experiments.
 
 \begin{itemize}
-    \item We will calculate \textit{Success Rate} for both algorithms for multiple environments, including those used in the original paper (e.g. \textit{Isaac Gym}~\cite{isaac_gym}).
+    \item We will calculate \textit{Success Rate} for both algorithms for multiple environments. However, we probably won't include those used in the original paper (e.g. \textit{Isaac Gym}~\cite{isaac_gym}), as they're quite old, no longer maintained, and therefore hard to use. Instead, we'll try to focus on leveraging the \textit{K-Sim}~\cite{ksim_repo} RL training library for humanoid locomotion and manipulation.
     \item We will test different types of prompts for image analysis in \textit{Multimodal Eureka} and choose the best one in terms of the average \textit{Success Rate}.
     \item The experiments will probably require a large model, so our choice of LLM will depend on what we can access. We will consider using multimodal \textit{Gemini} and \textit{GPT} models.
     \item We will experiment with different numbers of input images (e.g. last few frames).
@@ -92,6 +92,10 @@ David Hoeller, Nikita Rudin, Arthur Allshire, Ankur Handa, et al. \emph{Isaac gy
 gpu-based physics simulation for robot learning}. arXiv preprint arXiv:2108.10470, 2021.
 \bibitem{eureka_repo}
 Yecheng Jason Ma and William Liang, \emph{Eureka Repository on GitHub}, https://github.com/eureka-research/Eureka
+
+\bibitem{ksim_repo}
+K-Scale Labs, \emph{K-Sim Repository on GitHub}
+https://github.com/kscalelabs/ksim
 
 \bibitem{GPT-4}
 OpenAI,
