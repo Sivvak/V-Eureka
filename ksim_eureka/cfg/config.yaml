@@ -1,0 +1,31 @@
+# K-Sim Eureka Configuration
+
+# Task configuration
+task:
+  name: "humanoid_walking"
+  description: "Train a humanoid robot to walk forward stably"
+  base_task_file: "/home/pawel/repos/university/sem-2/V-Eureka/ksim_eureka/tasks/base_humanoid_task.py"  # Path to base K-Sim task file
+
+# Model configuration
+model: "gemini-2.5-flash-preview-05-20"
+temperature: 0.1
+
+# Training configuration
+iteration: 5  # Number of Eureka iterations
+sample: 1     # Number of reward functions to generate per iteration
+max_iterations: 1000  # Max training steps per reward function
+
+# K-Sim specific configuration
+num_envs: 1      # Number of parallel environments
+batch_size: 1     # Batch size for training
+
+# Logging
+use_wandb: false
+wandb_username: ""
+wandb_project: "ksim_eureka"
+
+# Evaluation
+num_eval: 3  # Number of evaluation runs for best reward
+
+defaults:
+  - _self_ 

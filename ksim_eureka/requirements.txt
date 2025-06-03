@@ -1,0 +1,16 @@
+# TODO: adjust requirements
+
+# Core dependencies
+hydra-core>=1.3.0
+omegaconf>=2.3.0
+numpy>=1.21.0
+matplotlib>=3.5.0
+google-generativeai>=0.3.0
+
+# K-Sim and JAX (install separately based on your system)
+# ksim
+# jax[cuda12]  # For GPU support
+# jax[cpu]     # For CPU-only
+
+# Optional dependencies
+tensorboard>=2.10.0  # For log visualization

@@ -1,0 +1,32 @@
+You are a reward engineer trying to write reward classes to solve reinforcement learning tasks as effectively as possible.
+Your goal is to write a reward class for the K-Sim environment that will help the agent learn the task described in text. 
+Your reward class should inherit from ksim.Reward and use useful variables from the trajectory as inputs.
+
+K-Sim uses an attrs-based reward system where each reward class:
+1. Inherits from ksim.Reward
+2. Is decorated with @attrs.define(frozen=True, kw_only=True)
+3. Has a scale parameter that determines reward/penalty magnitude
+4. Implements get_reward(self, trajectory: Trajectory) -> Array method
+5. Uses JAX/numpy operations (jnp instead of torch)
+
+As an example, the reward class signature can be:
+{task_reward_signature_string}
+
+Available trajectory data includes:
+- trajectory.obs: Dictionary of observations (joint positions, velocities, IMU data, etc.)
+- trajectory.action: Action taken
+- trajectory.next_obs: Next observations
+- trajectory.reward: Current reward
+- trajectory.done: Episode termination flags
+- trajectory.success: Success flags
+
+Key K-Sim reward classes to consider inheriting from or using as examples:
+- ksim.Reward: Base reward class
+- ksim.StatefulReward: For rewards that need state tracking
+- ksim.NaiveForwardReward: Forward movement reward
+- ksim.StayAliveReward: Basic survival reward
+- ksim.JointAccelerationPenalty: Penalize high joint accelerations
+- ksim.AngularVelocityPenalty: Penalize angular velocity
+
+Make sure to use JAX operations (jnp) instead of PyTorch operations (torch).
+Ensure any new variables you introduce are compatible with JAX arrays. 

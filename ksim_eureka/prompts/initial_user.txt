@@ -1,0 +1,12 @@
+The task to be learned is: {task_description}
+
+Please analyze the task and create a custom reward class that will help the agent learn this behavior. Consider:
+1. What observations from the trajectory would be most relevant?
+2. What behaviors should be rewarded vs penalized?
+3. How to balance different reward components?
+4. Whether to use existing K-Sim reward classes or create completely new ones?
+
+Available trajectory observations may include:
+{available_observations}
+
+Write a complete K-Sim reward class following the attrs-based pattern. Make sure to include proper imports, class decoration, parameter definitions, and the get_reward method implementation. 

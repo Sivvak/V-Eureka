@@ -1,0 +1,15 @@
+@attrs.define(frozen=True, kw_only=True)
+class CustomTaskReward(ksim.Reward):
+    """Custom reward for the specific task."""
+    
+    # Example parameters (customize based on task)
+    target_threshold: float = attrs.field(default=1.0)
+    norm: str = attrs.field(default="l2")
+    
+    def get_reward(self, trajectory: Trajectory) -> Array:
+        # Extract relevant observations
+        # Example: joint_positions = trajectory.obs["joint_position_observation"]
+        # Calculate reward based on task requirements
+        # Return reward array of shape (time,)
+        reward = jnp.ones_like(trajectory.done, dtype=jnp.float32)
+        return reward 

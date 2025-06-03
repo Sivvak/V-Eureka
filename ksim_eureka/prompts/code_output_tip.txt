@@ -1,0 +1,12 @@
+Code Output Tips for K-Sim Reward Classes:
+1. Always start with the required imports: `import attrs`, `import jax.numpy as jnp`, `import ksim`, `from jaxtyping import Array`
+2. Use @attrs.define(frozen=True, kw_only=True) decorator before your class definition
+3. Inherit from ksim.Reward or ksim.StatefulReward
+4. Include a scale parameter with attrs.field() and proper validator
+5. Implement get_reward(self, trajectory: Trajectory) -> Array method
+6. Use jnp operations instead of torch operations
+7. Access observations via trajectory.obs["observation_name"]
+8. Return reward arrays with shape matching trajectory.done
+9. Use meaningful class names ending in "Reward" or "Penalty"
+10. Add docstrings explaining the reward's purpose
+11. Validate parameters using attrs validators when appropriate 
