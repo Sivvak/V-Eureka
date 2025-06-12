@@ -14,8 +14,15 @@ import openai
 from utils.create_task import create_task
 from utils.file_utils import load_tensorboard_logs
 
-from eureka.utils.extract_task_code import file_to_string, get_function_signature
-from eureka.utils.misc import block_until_training, filter_traceback, set_freest_gpu
+from genesis_eureka.utils.extract_task_code import (
+    file_to_string,
+    get_function_signature,
+)
+from genesis_eureka.utils.misc import (
+    block_until_training,
+    filter_traceback,
+    set_freest_gpu,
+)
 
 EUREKA_ROOT_DIR = os.getcwd()
 ISAAC_ROOT_DIR = f"{EUREKA_ROOT_DIR}/../isaacgymenvs/isaacgymenvs"
