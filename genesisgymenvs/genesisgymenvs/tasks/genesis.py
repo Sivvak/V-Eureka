@@ -160,7 +160,9 @@ class Go2Env:
 
         self.reset_idx(self.reset_buf.nonzero(as_tuple=False).flatten())
 
-        # TODO (2) - Compute consecutive_successes. You can use data from self.rest_buf to define when the task is successful
+        # TODO (2) - Compute consecutive_successes
+        # You can use data from self.rest_buf to define when the task is successful
+        # You need to save a list of integers of length self.num_envs
         ### BEGIN CODE ###
 
         ### END CODE ###
@@ -242,7 +244,8 @@ class Go2Env:
         for rew_state in self.reward_dicts.keys(): 
                 self.extras["episode"]["rew_" + rew_state] = torch.mean(self.reward_dicts.get(rew_state, 0.0)).item()
 
-        # TODO (2) - Log information about consecutive_successes. Save it in self.extras["episode"]["consecutive_successes"]
+        # TODO (2) - Log information about consecutive_successes
+        # Save it in self.extras["episode"]["consecutive_successes"]
         ### BEGIN CODE ###
 
         ### END CODE ###
