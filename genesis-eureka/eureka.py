@@ -15,9 +15,10 @@ from utils.misc import *
 from utils.file_utils import find_files_with_substring, load_tensorboard_logs
 from utils.create_task import create_task
 from utils.extract_task_code import *
+from utils.generate_reward_functions import generate_reward_functions
 
 EUREKA_ROOT_DIR = os.getcwd()
-ISAAC_ROOT_DIR = f"{EUREKA_ROOT_DIR}/../isaacgymenvs/isaacgymenvs"
+GENESIS_ROOT_DIR = f"{EUREKA_ROOT_DIR}/../genesisgymenvs/genesisgymenvs"
 
 @hydra.main(config_path="cfg", config_name="config", version_base="1.1")
 def main(cfg):
@@ -30,19 +31,22 @@ def main(cfg):
     task = cfg.env.task
     task_description = cfg.env.description
     suffix = cfg.suffix
+
+    # TODO (1) - Change to a proper model (it can be either string or an initialized model)
     model = cfg.model
+
     logging.info(f"Using LLM: {model}")
     logging.info("Task: " + task)
     logging.info("Task description: " + task_description)
 
     env_name = cfg.env.env_name.lower()
-    env_parent = 'isaac' if f'{env_name}.py' in os.listdir(f'{EUREKA_ROOT_DIR}/envs/isaac') else 'dexterity'
+    env_parent = 'genesis'
     task_file = f'{EUREKA_ROOT_DIR}/envs/{env_parent}/{env_name}.py'
     task_obs_file = f'{EUREKA_ROOT_DIR}/envs/{env_parent}/{env_name}_obs.py'
     shutil.copy(task_obs_file, f"env_init_obs.py")
     task_code_string  = file_to_string(task_file)
     task_obs_code_string  = file_to_string(task_obs_file)
-    output_file = f"{ISAAC_ROOT_DIR}/tasks/{env_name}{suffix.lower()}.py"
+    output_file = f"{GENESIS_ROOT_DIR}/tasks/{env_name}.py"
 
     # Loading all text prompts
     prompt_dir = f'{EUREKA_ROOT_DIR}/utils/prompts'
@@ -59,8 +63,6 @@ def main(cfg):
     messages = [{"role": "system", "content": initial_system}, {"role": "user", "content": initial_user}]
 
     task_code_string = task_code_string.replace(task, task+suffix)
-    # Create Task YAML files
-    create_task(ISAAC_ROOT_DIR, cfg.env.task, cfg.env.env_name, suffix)
 
     DUMMY_FAILURE = -10000.
     max_successes = []
@@ -68,7 +70,6 @@ def main(cfg):
     execute_rates = []
     best_code_paths = []
     max_success_overall = DUMMY_FAILURE
-    max_success_reward_correlation_overall = DUMMY_FAILURE
     max_reward_code_path = None 
     
     # Eureka generation loop
@@ -77,8 +78,6 @@ def main(cfg):
         responses = []
         response_cur = None
         total_samples = 0
-        total_token = 0
-        total_completion_token = 0
         chunk_size = cfg.sample if "gpt-3.5" in model else 4
 
         logging.info(f"Iteration {iter}: Generating {cfg.sample} samples with {cfg.model}")
@@ -88,12 +87,7 @@ def main(cfg):
                 break
             for attempt in range(1000):
                 try:
-                    response_cur = openai.ChatCompletion.create(
-                        model=model,
-                        messages=messages,
-                        temperature=cfg.temperature,
-                        n=chunk_size
-                    )
+                    response_cur = generate_reward_functions(model, messages, chunk_size, None)
                     total_samples += chunk_size
                     break
                 except Exception as e:
@@ -107,16 +101,10 @@ def main(cfg):
                 exit()
 
             responses.extend(response_cur["choices"])
-            prompt_tokens = response_cur["usage"]["prompt_tokens"]
-            total_completion_token += response_cur["usage"]["completion_tokens"]
-            total_token += response_cur["usage"]["total_tokens"]
 
         if cfg.sample == 1:
             logging.info(f"Iteration {iter}: GPT Output:\n " + responses[0]["message"]["content"] + "\n")
 
-        # Logging Token Information
-        logging.info(f"Iteration {iter}: Prompt Tokens: {prompt_tokens}, Completion Tokens: {total_completion_token}, Total Tokens: {total_token}")
-        
         code_runs = [] 
         rl_runs = []
         for response_id in range(cfg.sample):
@@ -143,38 +131,16 @@ def main(cfg):
             for i, line in enumerate(lines):
                 if line.strip().startswith("def "):
                     code_string = "\n".join(lines[i:])
-                    
-            # Add the Eureka Reward Signature to the environment code
-            try:
-                gpt_reward_signature, input_lst = get_function_signature(code_string)
-            except Exception as e:
-                logging.info(f"Iteration {iter}: Code Run {response_id} cannot parse function signature!")
-                continue
+            
+            # Added indents by myself
+            indent = " " * 4
+            code_string = "\n".join([indent + line for line in code_string.split("\n")])
 
             code_runs.append(code_string)
-            reward_signature = [
-                f"self.rew_buf[:], self.rew_dict = {gpt_reward_signature}",
-                f"self.extras['gpt_reward'] = self.rew_buf.mean()",
-                f"for rew_state in self.rew_dict: self.extras[rew_state] = self.rew_dict[rew_state].mean()",
-            ]
-            indent = " " * 8
-            reward_signature = "\n".join([indent + line for line in reward_signature])
-            if "def compute_reward(self)" in task_code_string:
-                task_code_string_iter = task_code_string.replace("def compute_reward(self):", "def compute_reward(self):\n" + reward_signature)
-            elif "def compute_reward(self, actions)" in task_code_string:
-                task_code_string_iter = task_code_string.replace("def compute_reward(self, actions):", "def compute_reward(self, actions):\n" + reward_signature)
-            else:
-                raise NotImplementedError
 
             # Save the new environment code when the output contains valid code string!
             with open(output_file, 'w') as file:
-                file.writelines(task_code_string_iter + '\n')
-                file.writelines("from typing import Tuple, Dict" + '\n')
-                file.writelines("import math" + '\n')
-                file.writelines("import torch" + '\n')
-                file.writelines("from torch import Tensor" + '\n')
-                if "@torch.jit.script" not in code_string:
-                    code_string = "@torch.jit.script\n" + code_string
+                file.writelines(task_code_string + '\n')
                 file.writelines(code_string + '\n')
 
             with open(f"env_iter{iter}_response{response_id}_rewardonly.py", 'w') as file:
@@ -189,13 +155,7 @@ def main(cfg):
             # Execute the python file with flags
             rl_filepath = f"env_iter{iter}_response{response_id}.txt"
             with open(rl_filepath, 'w') as f:
-                process = subprocess.Popen(['python', '-u', f'{ISAAC_ROOT_DIR}/train.py',  
-                                            'hydra/output=subprocess',
-                                            f'task={task}{suffix}', f'wandb_activate={cfg.use_wandb}',
-                                            f'wandb_entity={cfg.wandb_username}', f'wandb_project={cfg.wandb_project}',
-                                            f'headless={not cfg.capture_video}', f'capture_video={cfg.capture_video}', 'force_render=False',
-                                            f'max_iterations={cfg.max_iterations}'],
-                                            stdout=f, stderr=f)
+                process = subprocess.Popen(['python', '-u', f'{GENESIS_ROOT_DIR}/train.py'], stdout=f, stderr=f)
             block_until_training(rl_filepath, log_status=True, iter_num=iter, response_id=response_id)
             rl_runs.append(process)
         
@@ -217,7 +177,7 @@ def main(cfg):
             except: 
                 content = execution_error_feedback.format(traceback_msg="Code Run cannot be executed due to function signature error! Please re-write an entirely new reward function!")
                 content += code_output_tip
-                contents.append(content) 
+                contents.append(content)
                 successes.append(DUMMY_FAILURE)
                 reward_correlations.append(DUMMY_FAILURE)
                 continue
@@ -233,8 +193,18 @@ def main(cfg):
                     if line.startswith('Tensorboard Directory:'):
                         break 
                 tensorboard_logdir = line.split(':')[-1].strip() 
+
                 tensorboard_logs = load_tensorboard_logs(tensorboard_logdir)
-                max_iterations = np.array(tensorboard_logs['gt_reward']).shape[0]
+
+                tensorboard_logs = {
+                    k.split('/', 1)[1] if k.startswith("Episode/") else k: v
+                    for k, v in tensorboard_logs.items()
+                }
+
+                # TODO (2) - Delete mock successes
+                tensorboard_logs['consecutive_successes'] = list([0] * len(tensorboard_logs['rew_eureka']))
+
+                max_iterations = np.array(tensorboard_logs['rew_eureka']).shape[0]
                 epoch_freq = max(int(max_iterations // 10), 1)
                 
                 content += policy_feedback.format(epoch_freq=epoch_freq)
@@ -274,8 +244,8 @@ def main(cfg):
                 content += execution_error_feedback.format(traceback_msg=traceback_msg)
 
             content += code_output_tip
-            contents.append(content) 
-        
+            contents.append(content)
+
         # Repeat the iteration if all code generation failed
         if not exec_success and cfg.sample != 1:
             execute_rates.append(0.)
@@ -290,21 +260,17 @@ def main(cfg):
         best_content = contents[best_sample_idx]
             
         max_success = successes[best_sample_idx]
-        max_success_reward_correlation = reward_correlations[best_sample_idx]
         execute_rate = np.sum(np.array(successes) >= 0.) / cfg.sample
 
         # Update the best Eureka Output
         if max_success > max_success_overall:
             max_success_overall = max_success
-            max_success_reward_correlation_overall = max_success_reward_correlation
             max_reward_code_path = code_paths[best_sample_idx]
 
         execute_rates.append(execute_rate)
         max_successes.append(max_success)
-        max_successes_reward_correlation.append(max_success_reward_correlation)
         best_code_paths.append(code_paths[best_sample_idx])
 
-        logging.info(f"Iteration {iter}: Max Success: {max_success}, Execute Rate: {execute_rate}, Max Success Reward Correlation: {max_success_reward_correlation}")
         logging.info(f"Iteration {iter}: Best Generation ID: {best_sample_idx}")
         logging.info(f"Iteration {iter}: GPT Output Content:\n" +  responses[best_sample_idx]["message"]["content"] + "\n")
         logging.info(f"Iteration {iter}: User Content:\n" + best_content + "\n")
@@ -325,7 +291,7 @@ def main(cfg):
 
         fig.tight_layout(pad=3.0)
         plt.savefig('summary.png')
-        np.savez('summary.npz', max_successes=max_successes, execute_rates=execute_rates, best_code_paths=best_code_paths, max_successes_reward_correlation=max_successes_reward_correlation)
+        np.savez('summary.npz', max_successes=max_successes, execute_rates=execute_rates, best_code_paths=best_code_paths)
 
         if len(messages) == 2:
             messages += [{"role": "assistant", "content": responses[best_sample_idx]["message"]["content"]}]
@@ -344,7 +310,6 @@ def main(cfg):
         logging.info("All iterations of code generation failed, aborting...")
         logging.info("Please double check the output env_iter*_response*.txt files for repeating errors!")
         exit()
-    logging.info(f"Task: {task}, Max Training Success {max_success_overall}, Correlation {max_success_reward_correlation_overall}, Best Reward Code Path: {max_reward_code_path}")
     logging.info(f"Evaluating best reward code {cfg.num_eval} times")
     shutil.copy(max_reward_code_path, output_file)
     
@@ -355,13 +320,7 @@ def main(cfg):
         # Execute the python file with flags
         rl_filepath = f"reward_code_eval{i}.txt"
         with open(rl_filepath, 'w') as f:
-            process = subprocess.Popen(['python', '-u', f'{ISAAC_ROOT_DIR}/train.py',  
-                                        'hydra/output=subprocess',
-                                        f'task={task}{suffix}', f'wandb_activate={cfg.use_wandb}',
-                                        f'wandb_entity={cfg.wandb_username}', f'wandb_project={cfg.wandb_project}',
-                                        f'headless={not cfg.capture_video}', f'capture_video={cfg.capture_video}', 'force_render=False', f'seed={i}',
-                                        ],
-                                        stdout=f, stderr=f)
+            process = subprocess.Popen(['python', '-u', f'{GENESIS_ROOT_DIR}/train.py'], stdout=f, stderr=f)
 
         block_until_training(rl_filepath)
         eval_runs.append(process)
@@ -379,6 +338,10 @@ def main(cfg):
                 break 
         tensorboard_logdir = line.split(':')[-1].strip() 
         tensorboard_logs = load_tensorboard_logs(tensorboard_logdir)
+        
+        # TODO (2) - Delete mock successes
+        tensorboard_logs['consecutive_successes'] = list([0] * len(tensorboard_logs['Episode/rew_eureka']))
+
         max_success = max(tensorboard_logs['consecutive_successes'])
         reward_code_final_successes.append(max_success)
 
