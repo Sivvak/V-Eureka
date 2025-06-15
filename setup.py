@@ -6,7 +6,7 @@ INSTALL_REQUIRES = [
     "matplotlib",
     "openai",
     'torch<=2.0.0',
-    'numpy==1.20.0',
+    'numpy==1.24.0',
     'ray>=1.1.0',
     'tensorboard>=1.14.0',
     'tensorboardX>=1.6',
@@ -32,4 +32,3 @@ setup(
     install_requires=INSTALL_REQUIRES,
     packages=find_packages("."),
 )
-
