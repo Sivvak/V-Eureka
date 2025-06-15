@@ -15,7 +15,9 @@ def generate_reward_functions(model: str, messages: List[Dict[str, str]], chunk_
         - chunk_size: number of reward functions to generate
         - cfg: additional configuration
     Output:
-        - response: 
+        - response: a dictionary of LLM resposes.
+                    Key `choices` contains a list of generated reward functions.
+                    You can add other keys to track statistics e.g. `number_of_tokens`.
     '''
     # (1) Example messages format
     messages = [{"role": "system", "content": "prompt1"}, {"role": "user", "content": "prompt2"}]
