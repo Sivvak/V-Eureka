@@ -113,6 +113,8 @@ class Go2Env:
         self.extras = dict()  # extra information for logging
         self.extras["observations"] = dict()
 
+        self.consecutive_successes = torch.zeros(1, device=gs.device, dtype=gs.tc_float)
+
     def _resample_commands(self, envs_idx):
         self.commands[envs_idx, 0] = gs_rand_float(*self.command_cfg["lin_vel_x_range"], (len(envs_idx),), gs.device)
         self.commands[envs_idx, 1] = gs_rand_float(*self.command_cfg["lin_vel_y_range"], (len(envs_idx),), gs.device)
@@ -161,7 +163,7 @@ class Go2Env:
         self.reset_idx(self.reset_buf.nonzero(as_tuple=False).flatten())
 
         # TODO (2) - Compute consecutive_successes
-        # You can use data from self.rest_buf to define when the task is successful
+        # You can use data from self.reset_buf to define when the task is successful
         # You need to save a list of integers of length self.num_envs
         ### BEGIN CODE ###
 
@@ -174,7 +176,7 @@ class Go2Env:
             self.rew_buf += rew
             self.episode_sums[name] += rew
             self.extras['gpt_reward'] = self.rew_buf.mean()
-            for rew_state in rew_dict: 
+            for rew_state in rew_dict:
                 self.reward_dicts[rew_state] = rew_dict[rew_state]
 
         # compute observations
@@ -241,14 +243,10 @@ class Go2Env:
             )
             self.episode_sums[key][envs_idx] = 0.0
 
-        for rew_state in self.reward_dicts.keys(): 
+        for rew_state in self.reward_dicts.keys():
                 self.extras["episode"]["rew_" + rew_state] = torch.mean(self.reward_dicts.get(rew_state, 0.0)).item()
 
-        # TODO (2) - Log information about consecutive_successes
-        # Save it in self.extras["episode"]["consecutive_successes"]
-        ### BEGIN CODE ###
-
-        ### END CODE ###
+        self.extras["episode"]["consecutive_successes"] = self.consecutive_successes.mean()
 
         self._resample_commands(envs_idx)
 

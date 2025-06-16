@@ -25,9 +25,16 @@ Eureka requires Python ≥ 3.8. We have tested on Ubuntu 20.04 and 22.04.
 
 1. Create a new conda environment with:
     ```
-    conda create -n eureka python=3.8
+    conda create -n eureka python=3.11.4
     conda activate eureka
     ```
+
+1.5. Install genesis
+   ```
+   pip install git+https://github.com/Genesis-Embodied-AI/Genesis.git
+   pip install rsl-rl-lib==2.2.4
+   pip install tensorboard
+   ```
 
 2. Install IsaacGym (tested with `Preview Release 4/4`). Follow the [instruction](https://developer.nvidia.com/isaac-gym) to download the package.
 ```	
