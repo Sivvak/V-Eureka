@@ -331,12 +331,7 @@ def main(cfg):
             if line.startswith('Tensorboard Directory:'):
                 break
         tensorboard_logdir = line.split(':')[-1].strip()
-
-        # TODO this is hotfix, so that tensorboard_logs get saved in time,
-        # maybe a better solution exists
-        time.sleep(1)
         tensorboard_logs = load_tensorboard_logs(tensorboard_logdir)
-
 
         max_success = max(tensorboard_logs['consecutive_successes'])
         reward_code_final_successes.append(max_success)
@@ -348,9 +343,15 @@ def main(cfg):
             reward_code_correlations_final.append(reward_correlation)
 
     logging.info(
-        f"Final Success Mean: {np.mean(reward_code_final_successes)}, Std: {np.std(reward_code_final_successes)}, Raw: {reward_code_final_successes}")
+        f"Final Success Mean: {np.mean(reward_code_final_successes)}, "
+        f"Std: {np.std(reward_code_final_successes)}, "
+        f"Raw: {reward_code_final_successes}")
+
     logging.info(
-        f"Final Correlation Mean: {np.mean(reward_code_correlations_final)}, Std: {np.std(reward_code_correlations_final)}, Raw: {reward_code_correlations_final}")
+        f"Final Correlation Mean: {np.mean(reward_code_correlations_final)},"
+        f" Std: {np.std(reward_code_correlations_final)},"
+        f" Raw: {reward_code_correlations_final}")
+
     np.savez('final_eval.npz', reward_code_final_successes=reward_code_final_successes,
              reward_code_correlations_final=reward_code_correlations_final)
 

@@ -1,9 +1,14 @@
 from collections import defaultdict
 
 from tensorboard.backend.event_processing.event_accumulator import EventAccumulator
+import time
 
 
 def load_tensorboard_logs(path):
+    # TODO this is hotfix, so that tensorboard_logs get saved in time,
+    # maybe a better solution exists
+    time.sleep(2)
+
     data = defaultdict(list)
     event_acc = EventAccumulator(path)
     event_acc.Reload()  # Load all data written so far
