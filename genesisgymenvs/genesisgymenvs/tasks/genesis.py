@@ -113,7 +113,6 @@ class Go2Env:
         self.extras = dict()  # extra information for logging
         self.extras["observations"] = dict()
 
-        # TODO (2)
         self.consecutive_successes = torch.zeros(1, device=gs.device, dtype=gs.tc_float)
 
     def _resample_commands(self, envs_idx):
@@ -164,10 +163,10 @@ class Go2Env:
         self.reset_idx(self.reset_buf.nonzero(as_tuple=False).flatten())
 
         # TODO (2) - Compute consecutive_successes
-        # You can use data from self.reset_buf to define when the task is successful
-        # You need to save a list of integers of length self.num_envs
-        ### BEGIN CODE ###
-
+        # ### BEGIN CODE ###
+        # lin_vel_error = torch.sum(torch.square(self.commands[:, :2] - self.base_lin_vel[:, :2]), dim=1)
+        # ang_vel_error = torch.square(self.commands[:, 2] - self.base_ang_vel[:, 2])
+        # self.consecutive_successes = -(lin_vel_error + ang_vel_error).mean()
         ### END CODE ###
 
         # compute reward
@@ -247,11 +246,7 @@ class Go2Env:
         for rew_state in self.reward_dicts.keys():
                 self.extras["episode"]["rew_" + rew_state] = torch.mean(self.reward_dicts.get(rew_state, 0.0)).item()
 
-        # TODO (2) - Log information about consecutive_successes
-        # Save it in self.extras["episode"]["consecutive_successes"]
-        ### BEGIN CODE ###
         self.extras["episode"]["consecutive_successes"] = self.consecutive_successes.mean()
-        ### END CODE ###
 
         self._resample_commands(envs_idx)
 

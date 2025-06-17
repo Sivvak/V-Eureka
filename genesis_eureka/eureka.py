@@ -336,7 +336,12 @@ def main(cfg):
             if line.startswith('Tensorboard Directory:'):
                 break
         tensorboard_logdir = line.split(':')[-1].strip()
+
+        # TODO this is hotfix, so that tensorboard_logs get saved in time,
+        # maybe a better solution exists
+        time.sleep(1)
         tensorboard_logs = load_tensorboard_logs(tensorboard_logdir)
+
 
         max_success = max(tensorboard_logs['Episode/consecutive_successes'])
         reward_code_final_successes.append(max_success)

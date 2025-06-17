@@ -163,10 +163,10 @@ class Go2Env:
         self.reset_idx(self.reset_buf.nonzero(as_tuple=False).flatten())
 
         # TODO (2) - Compute consecutive_successes
-        # You can use data from self.reset_buf to define when the task is successful
-        # You need to save a list of integers of length self.num_envs
-        ### BEGIN CODE ###
-
+        # ### BEGIN CODE ###
+        # lin_vel_error = torch.sum(torch.square(self.commands[:, :2] - self.base_lin_vel[:, :2]), dim=1)
+        # ang_vel_error = torch.square(self.commands[:, 2] - self.base_ang_vel[:, 2])
+        # self.consecutive_successes = -(lin_vel_error + ang_vel_error).mean()
         ### END CODE ###
 
         # compute reward
