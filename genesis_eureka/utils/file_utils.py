@@ -13,4 +13,9 @@ def load_tensorboard_logs(path):
         for event in events:
             data[tag].append(event.value)
 
+    data = {
+        k.split('/', 1)[1] if k.startswith("Episode/") else k: v
+        for k, v in data.items()
+    }
+
     return data

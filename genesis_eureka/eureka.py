@@ -196,11 +196,6 @@ def main(cfg):
 
                 tensorboard_logs = load_tensorboard_logs(tensorboard_logdir)
 
-                tensorboard_logs = {
-                    k.split('/', 1)[1] if k.startswith("Episode/") else k: v
-                    for k, v in tensorboard_logs.items()
-                }
-
                 max_iterations = np.array(tensorboard_logs['rew_eureka']).shape[0]
                 epoch_freq = max(int(max_iterations // 10), 1)
 
@@ -343,7 +338,7 @@ def main(cfg):
         tensorboard_logs = load_tensorboard_logs(tensorboard_logdir)
 
 
-        max_success = max(tensorboard_logs['Episode/consecutive_successes'])
+        max_success = max(tensorboard_logs['consecutive_successes'])
         reward_code_final_successes.append(max_success)
 
         if "gt_reward" in tensorboard_logs and "gpt_reward" in tensorboard_logs:
