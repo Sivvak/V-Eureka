@@ -5,9 +5,11 @@ import logging
 
 from utils.extract_task_code import file_to_string
 
+
 def set_freest_gpu():
     freest_gpu = get_freest_gpu()
     os.environ['CUDA_VISIBLE_DEVICES'] = str(freest_gpu)
+
 
 def get_freest_gpu():
     sp = subprocess.Popen(['gpustat', '--json'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -17,6 +19,7 @@ def get_freest_gpu():
     freest_gpu = min(gpustats['gpus'], key=lambda x: x['memory.used'])
 
     return freest_gpu['index']
+
 
 def filter_traceback(s):
     lines = s.split('\n')
@@ -30,6 +33,7 @@ def filter_traceback(s):
             return '\n'.join(filtered_lines)
     return ''  # Return an empty string if no Traceback is found
 
+
 def block_until_training(rl_filepath, log_status=False, iter_num=-1, response_id=-1):
     # Ensure that the RL training has started before moving on
     while True:
@@ -38,6 +42,7 @@ def block_until_training(rl_filepath, log_status=False, iter_num=-1, response_id
             if log_status:
                 logging.info(f"Iteration {iter_num}: Code Run {response_id} successfully training!")
             break
+
 
 if __name__ == "__main__":
     print(get_freest_gpu())

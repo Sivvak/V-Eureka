@@ -5,8 +5,8 @@ INSTALL_REQUIRES = [
     "charset-normalizer",
     "matplotlib",
     "openai",
-    'torch<=2.0.0',
-    'numpy==1.20.0',
+    'torch<=2.7.1',
+    'numpy==2.2.6',
     'ray>=1.1.0',
     'tensorboard>=1.14.0',
     'tensorboardX>=1.6',
@@ -18,6 +18,7 @@ INSTALL_REQUIRES = [
     "termcolor",
     "hydra-core>=1.1",
     "pyvirtualdisplay",
+    "gpustat"
 ]
 
 # Installation operation
@@ -32,4 +33,3 @@ setup(
     install_requires=INSTALL_REQUIRES,
     packages=find_packages("."),
 )
-
