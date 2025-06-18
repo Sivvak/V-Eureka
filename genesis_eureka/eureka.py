@@ -6,6 +6,7 @@ import re
 from pathlib import Path
 import shutil
 import time
+import google.generativeai as genai
 
 from utils.misc import *
 from utils.file_utils import load_tensorboard_logs
@@ -21,7 +22,8 @@ def main(cfg):
     logging.info(f"Workspace: {workspace_dir}")
     logging.info(f"Project Root: {EUREKA_ROOT_DIR}")
 
-    openai.api_key = os.getenv("OPENAI_API_KEY")
+    api_key = os.getenv("GOOGLE_API_KEY")
+    genai.configure(api_key=api_key)
 
     task = cfg.env.task
     task_description = cfg.env.description
