@@ -133,10 +133,7 @@ class Go2Env:
 
         self.consecutive_successes = torch.zeros(1, device=gs.device, dtype=gs.tc_float)
 
-        # TODO
-        # step_count
         self.step_count = 0
-        # How many steps to take photo
         self.how_often_save_photos = how_often_save_photos
 
 
@@ -152,7 +149,6 @@ class Go2Env:
         self.robot.control_dofs_position(target_dof_pos, self.motors_dof_idx)
         self.scene.step()
 
-        # # TODO
         self.step_count += 1
         if self.how_often_save_photos != -1 and self.step_count % self.how_often_save_photos == 0:
             rgb, _, _, _ = self.cam.render()
