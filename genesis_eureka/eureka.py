@@ -1,16 +1,16 @@
-import hydra
-import numpy as np
-import matplotlib.pyplot as plt
-import openai
 import re
-from pathlib import Path
 import shutil
 import time
-import google.generativeai as genai
+from pathlib import Path
 
-from utils.misc import *
+import google.generativeai as genai
+import hydra
+import matplotlib.pyplot as plt
+import numpy as np
+
 from utils.file_utils import load_tensorboard_logs
 from utils.generate_reward_functions import generate_reward_functions
+from utils.misc import *
 
 EUREKA_ROOT_DIR = os.getcwd()
 GENESIS_ROOT_DIR = f"{EUREKA_ROOT_DIR}/../genesisgymenvs/genesisgymenvs"
@@ -40,7 +40,7 @@ def main(cfg):
     env_parent = 'genesis'
     task_file = f'{EUREKA_ROOT_DIR}/envs/{env_parent}/{env_name}.py'
     task_obs_file = f'{EUREKA_ROOT_DIR}/envs/{env_parent}/{env_name}_obs.py'
-    shutil.copy(task_obs_file, f"env_init_obs.py")
+    shutil.copy(task_obs_file, "env_init_obs.py")
     task_code_string = file_to_string(task_file)
     task_obs_code_string = file_to_string(task_obs_file)
     output_file = f"{GENESIS_ROOT_DIR}/tasks/{env_name}.py"
@@ -57,7 +57,7 @@ def main(cfg):
 
     initial_system = initial_system.format(task_reward_signature_string=reward_signature) + code_output_tip
     initial_user = initial_user.format(task_obs_code_string=task_obs_code_string, task_description=task_description)
-    messages = [{"role": "system", "content": initial_system}, {"role": "user", "content": initial_user}]
+    messages = [{"role": "user", "parts": initial_system}, {"role": "user", "parts": initial_user}]
 
     task_code_string = task_code_string.replace(task, task + suffix)
 
@@ -75,7 +75,7 @@ def main(cfg):
         responses = []
         response_cur = None
         total_samples = 0
-        chunk_size = cfg.sample if "gpt-3.5" in model else 4
+        chunk_size = cfg.sample
 
         logging.info(f"Iteration {iter}: Generating {cfg.sample} samples with {cfg.model}")
 
@@ -100,12 +100,12 @@ def main(cfg):
             responses.extend(response_cur["choices"])
 
         if cfg.sample == 1:
-            logging.info(f"Iteration {iter}: GPT Output:\n " + responses[0]["message"]["content"] + "\n")
+            logging.info(f"Iteration {iter}: GPT Output:\n " + responses[0]["message"]["parts"] + "\n")
 
         code_runs = []
         rl_runs = []
         for response_id in range(cfg.sample):
-            response_cur = responses[response_id]["message"]["content"]
+            response_cur = responses[response_id]["message"]["parts"]
             logging.info(f"Iteration {iter}: Processing Code Run {response_id}")
 
             # Regex patterns to extract python code enclosed in GPT response
@@ -131,7 +131,8 @@ def main(cfg):
 
             # Added indents by myself
             indent = " " * 4
-            code_string = "\n".join([indent + line for line in code_string.split("\n")])
+            if not code_string.startswith(indent):
+                code_string = "\n".join([indent + line for line in code_string.split("\n")])
 
             code_runs.append(code_string)
 
@@ -153,7 +154,7 @@ def main(cfg):
             rl_filepath = f"env_iter{iter}_response{response_id}.txt"
 
             with open(rl_filepath, 'w') as f:
-                process = subprocess.Popen(['python', '-u', f'{GENESIS_ROOT_DIR}/train.py'], stdout=f, stderr=f)
+                process = subprocess.Popen(['python', '-u', f'{GENESIS_ROOT_DIR}/train.py', f'--max_iterations={cfg.max_iterations}'], stdout=f, stderr=f)
 
             block_until_training(rl_filepath, log_status=True, iter_num=iter, response_id=response_id)
 
@@ -267,7 +268,7 @@ def main(cfg):
 
         logging.info(f"Iteration {iter}: Best Generation ID: {best_sample_idx}")
         logging.info(
-            f"Iteration {iter}: GPT Output Content:\n" + responses[best_sample_idx]["message"]["content"] + "\n")
+            f"Iteration {iter}: GPT Output Content:\n" + responses[best_sample_idx]["message"]["parts"] + "\n")
         logging.info(f"Iteration {iter}: User Content:\n" + best_content + "\n")
 
         # Plot the success rate
@@ -290,12 +291,12 @@ def main(cfg):
                  best_code_paths=best_code_paths)
 
         if len(messages) == 2:
-            messages += [{"role": "assistant", "content": responses[best_sample_idx]["message"]["content"]}]
-            messages += [{"role": "user", "content": best_content}]
+            messages += [{"role": "model", "parts": responses[best_sample_idx]["message"]["parts"]}]
+            messages += [{"role": "user", "parts": best_content}]
         else:
             assert len(messages) == 4
-            messages[-2] = {"role": "assistant", "content": responses[best_sample_idx]["message"]["content"]}
-            messages[-1] = {"role": "user", "content": best_content}
+            messages[-2] = {"role": "model", "parts": responses[best_sample_idx]["message"]["parts"]}
+            messages[-1] = {"role": "user", "parts": best_content}
 
         # Save dictionary as JSON file
         with open('messages.json', 'w') as file:
@@ -316,7 +317,7 @@ def main(cfg):
         # Execute the python file with flags
         rl_filepath = f"reward_code_eval{i}.txt"
         with open(rl_filepath, 'w') as f:
-            process = subprocess.Popen(['python', '-u', f'{GENESIS_ROOT_DIR}/train.py'], stdout=f, stderr=f)
+            process = subprocess.Popen(['python', '-u', f'{GENESIS_ROOT_DIR}/train.py', f'--max_iterations={cfg.max_iterations}'], stdout=f, stderr=f)
 
         block_until_training(rl_filepath)
         eval_runs.append(process)
