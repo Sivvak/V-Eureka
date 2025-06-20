@@ -154,7 +154,17 @@ def main(cfg):
             rl_filepath = f"env_iter{iter}_response{response_id}.txt"
 
             with open(rl_filepath, 'w') as f:
-                process = subprocess.Popen(['python', '-u', f'{GENESIS_ROOT_DIR}/train.py', f'--max_iterations={cfg.max_iterations}'], stdout=f, stderr=f)
+                process = subprocess.Popen(
+                    [
+                        "python",
+                        "-u",
+                        f"{GENESIS_ROOT_DIR}/train.py",
+                        f"--max_iterations={cfg.max_iterations}",
+                        f"--exp_name={env_name}_{response_id}"
+                    ],
+                    stdout=f,
+                    stderr=f,
+                )
 
             block_until_training(rl_filepath, log_status=True, iter_num=iter, response_id=response_id)
 
@@ -317,7 +327,17 @@ def main(cfg):
         # Execute the python file with flags
         rl_filepath = f"reward_code_eval{i}.txt"
         with open(rl_filepath, 'w') as f:
-            process = subprocess.Popen(['python', '-u', f'{GENESIS_ROOT_DIR}/train.py', f'--max_iterations={cfg.max_iterations}'], stdout=f, stderr=f)
+            process = subprocess.Popen(
+                [
+                    "python",
+                    "-u",
+                    f"{GENESIS_ROOT_DIR}/train.py",
+                    f"--max_iterations={cfg.max_iterations}",
+                    f"--exp_name={env_name}_eval_{i}"
+                ],
+                stdout=f,
+                stderr=f,
+            )
 
         block_until_training(rl_filepath)
         eval_runs.append(process)
