@@ -13,6 +13,7 @@ from utils.generate_reward_functions import generate_reward_functions
 
 EUREKA_ROOT_DIR = os.getcwd()
 GENESIS_ROOT_DIR = f"{EUREKA_ROOT_DIR}/../genesisgymenvs/genesisgymenvs"
+HOW_OFTEN_SAVE_PHOTOS = 1
 
 
 @hydra.main(config_path="cfg", config_name="config", version_base="1.1")
@@ -151,7 +152,12 @@ def main(cfg):
             rl_filepath = f"env_iter{iter}_response{response_id}.txt"
 
             with open(rl_filepath, 'w') as f:
-                process = subprocess.Popen(['python', '-u', f'{GENESIS_ROOT_DIR}/train.py'], stdout=f, stderr=f)
+                process = subprocess.Popen([
+                    'python', '-u', f'{GENESIS_ROOT_DIR}/train.py',
+                    '--iter', str(iter),
+                    '--response_id', str(response_id),
+                    '--how_often_save_photos', str(HOW_OFTEN_SAVE_PHOTOS)
+                ], stdout=f, stderr=f)
 
             block_until_training(rl_filepath, log_status=True, iter_num=iter, response_id=response_id)
 
@@ -211,6 +217,8 @@ def main(cfg):
                 # Add reward components log to the feedback
                 for metric in tensorboard_logs:
                     if "/" not in metric:
+                        print(metric)
+                        print(tensorboard_logs[metric])
                         metric_cur = ['{:.2f}'.format(x) for x in tensorboard_logs[metric][::epoch_freq]]
                         metric_cur_max = max(tensorboard_logs[metric])
                         metric_cur_mean = sum(tensorboard_logs[metric]) / len(tensorboard_logs[metric])

@@ -1,3 +1,7 @@
+import os
+
+import imageio
+import numpy as np
 import torch
 import math
 import genesis as gs
@@ -10,7 +14,12 @@ def gs_rand_float(lower, upper, shape, device):
 
 
 class Go2Env:
-    def __init__(self, num_envs, env_cfg, obs_cfg, reward_cfg, command_cfg, show_viewer=False):
+    def __init__(self, num_envs, env_cfg, obs_cfg, reward_cfg, command_cfg,
+                 show_viewer=False,
+                 iter=0, response_id='0', how_often_save_photos=-1):
+        self.iter = iter
+        self.response_id = response_id
+
         self.num_envs = num_envs
         self.num_obs = obs_cfg["num_obs"]
         self.num_privileged_obs = None
@@ -47,6 +56,15 @@ class Go2Env:
                 enable_joint_limit=True,
             ),
             show_viewer=show_viewer,
+        )
+
+        # Add camera to scene
+        self.cam = self.scene.add_camera(
+            res=(1280, 960),
+            pos=(3.5, 0.0, 2.5),
+            lookat=(0, 0, 0.5),
+            fov=30,
+            GUI=False
         )
 
         # add plain
@@ -115,6 +133,10 @@ class Go2Env:
 
         self.consecutive_successes = torch.zeros(1, device=gs.device, dtype=gs.tc_float)
 
+        self.step_count = 0
+        self.how_often_save_photos = how_often_save_photos
+
+
     def _resample_commands(self, envs_idx):
         self.commands[envs_idx, 0] = gs_rand_float(*self.command_cfg["lin_vel_x_range"], (len(envs_idx),), gs.device)
         self.commands[envs_idx, 1] = gs_rand_float(*self.command_cfg["lin_vel_y_range"], (len(envs_idx),), gs.device)
@@ -126,6 +148,18 @@ class Go2Env:
         target_dof_pos = exec_actions * self.env_cfg["action_scale"] + self.default_dof_pos
         self.robot.control_dofs_position(target_dof_pos, self.motors_dof_idx)
         self.scene.step()
+
+        self.step_count += 1
+        if self.how_often_save_photos != -1 and self.step_count % self.how_often_save_photos == 0:
+            rgb, _, _, _ = self.cam.render()
+            os.makedirs('photos', exist_ok=True)
+            os.makedirs(f'photos/env_iter_{self.iter}_response_{self.response_id}', exist_ok=True)
+            imageio.imwrite(os.path.join(
+                f'photos/env_iter_{self.iter}_response_{self.response_id}',
+                f"photo_{self.step_count}.png"),
+                (rgb * 255).astype(np.uint8))
+            pass
+
 
         # update buffers
         self.episode_length_buf += 1
