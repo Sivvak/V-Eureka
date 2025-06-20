@@ -1,6 +1,7 @@
 from typing import Dict, List
 from omegaconf import DictConfig
 import google.generativeai as genai
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 def generate_reward_functions(
     model: str,
@@ -22,14 +23,24 @@ def generate_reward_functions(
                     Key `choices` contains a list of generated reward functions.
                     You can add other keys to track statistics e.g. `number_of_tokens`.
     '''
-
-    prompt_text = "\n".join(m["content"] for m in messages)
-
-    gen_model = genai.GenerativeModel(model)
+    TPM = 15_000
 
     choices = []
-    for _ in range(chunk_size):
-        response = gen_model.generate_content(prompt_text)
-        choices.append({"message": {"content": response.text}})
+    gen_model = genai.GenerativeModel(model)
+
+    tokens_count = gen_model.count_tokens(messages).total_tokens
+
+    def generate_single_response():
+        response = gen_model.generate_content(messages)
+        return {"message": {"parts": response.text}}
+
+    with ThreadPoolExecutor(max_workers=min(TPM // tokens_count, chunk_size)) as executor:
+        future_to_response = {
+            executor.submit(generate_single_response): i for i in range(chunk_size)
+        }
+
+        for future in as_completed(future_to_response):
+            result = future.result()
+            choices.append(result)
 
     return {"choices": choices}
