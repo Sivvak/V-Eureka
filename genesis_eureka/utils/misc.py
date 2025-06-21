@@ -42,6 +42,10 @@ def block_until_training(rl_filepath, log_status=False, iter_num=-1, response_id
             if log_status:
                 logging.info(f"Iteration {iter_num}: Code Run {response_id} successfully training!")
             break
+        elif "Traceback" in rl_log or "Error" in rl_log:
+            if log_status:
+                logging.info(f"Iteration {iter_num}: Code Run {response_id} failed!")
+            break
 
 
 if __name__ == "__main__":
