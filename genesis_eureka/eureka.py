@@ -222,8 +222,10 @@ def main(cfg):
                     reward_correlations.append(reward_correlation)
 
                 # Add reward components log to the feedback
+                additional_metrics = set(["Train/mean_episode_length"])
+
                 for metric in tensorboard_logs:
-                    if "/" not in metric:
+                    if "/" not in metric or metric in additional_metrics:
                         metric_cur = ['{:.2f}'.format(x) for x in tensorboard_logs[metric][::epoch_freq]]
                         metric_cur_max = max(tensorboard_logs[metric])
                         metric_cur_mean = sum(tensorboard_logs[metric]) / len(tensorboard_logs[metric])
@@ -232,7 +234,7 @@ def main(cfg):
                         metric_cur_min = min(tensorboard_logs[metric])
                         if metric != "gt_reward" and metric != "gpt_reward":
                             if metric != "consecutive_successes":
-                                metric_name = metric
+                                metric_name = metric.split("/")[-1]
                             else:
                                 metric_name = "task_score"
                             content += f"{metric_name}: {metric_cur}, Max: {metric_cur_max:.2f}, Mean: {metric_cur_mean:.2f}, Min: {metric_cur_min:.2f} \n"

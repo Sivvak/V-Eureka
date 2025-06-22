@@ -16,7 +16,7 @@ suffix: Gemma  # suffix for generated files (indicates LLM model)
 # Eureka parameters
 iteration: 5 # how many iterations of Eureka to run
 sample: 16 # number of Eureka samples to generate per iteration
-max_iterations: 501 # RL Policy training iterations (possibly it's too much, you can try lower values)
+max_iterations: 101 # RL Policy training iterations (possibly it's too much, you can try lower values)
 num_eval: 5 # number of evaluation episodes to run for the final reward
 capture_video: False # whether to capture policy rollout videos
 
