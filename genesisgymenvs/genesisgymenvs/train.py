@@ -148,6 +148,9 @@ def main():
     parser.add_argument("-e", "--exp_name", type=str, default="go2-walking")
     parser.add_argument("-B", "--num_envs", type=int, default=100)
     parser.add_argument("--max_iterations", type=int, default=2)
+    parser.add_argument("--iter", type=int, default=0)
+    parser.add_argument("--response_id", type=str, default='0')
+    parser.add_argument('--how_often_save_photos', type=int, default=-1)
     args = parser.parse_args()
 
     gs.init(logging_level="warning")
@@ -168,7 +171,15 @@ def main():
     )
 
     env = Go2Env(
-        num_envs=args.num_envs, env_cfg=env_cfg, obs_cfg=obs_cfg, reward_cfg=reward_cfg, command_cfg=command_cfg
+        num_envs=args.num_envs,
+        env_cfg=env_cfg,
+        obs_cfg=obs_cfg,
+        reward_cfg=reward_cfg,
+        command_cfg=command_cfg,
+        show_viewer=False,
+        iter=args.iter,
+        response_id=args.response_id,
+        how_often_save_photos=args.how_often_save_photos,
     )
 
     runner = OnPolicyRunner(env, train_cfg, log_dir, device=gs.device)

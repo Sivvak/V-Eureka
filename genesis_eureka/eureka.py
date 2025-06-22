@@ -14,6 +14,7 @@ from utils.misc import *
 
 EUREKA_ROOT_DIR = os.getcwd()
 GENESIS_ROOT_DIR = f"{EUREKA_ROOT_DIR}/../genesisgymenvs/genesisgymenvs"
+HOW_OFTEN_SAVE_PHOTOS = 1
 
 
 @hydra.main(config_path="cfg", config_name="config", version_base="1.1")
@@ -160,7 +161,10 @@ def main(cfg):
                         "-u",
                         f"{GENESIS_ROOT_DIR}/train.py",
                         f"--max_iterations={cfg.max_iterations}",
-                        f"--exp_name={env_name}_{response_id}"
+                        f"--exp_name={env_name}_{response_id}",
+                        '--iter', str(iter),
+                        '--response_id', str(response_id),
+                        '--how_often_save_photos', str(HOW_OFTEN_SAVE_PHOTOS)
                     ],
                     stdout=f,
                     stderr=f,
@@ -226,6 +230,9 @@ def main(cfg):
 
                 for metric in tensorboard_logs:
                     if "/" not in metric or metric in additional_metrics:
+                        print(metric)
+                        print(tensorboard_logs[metric])
+
                         metric_cur = ['{:.2f}'.format(x) for x in tensorboard_logs[metric][::epoch_freq]]
                         metric_cur_max = max(tensorboard_logs[metric])
                         metric_cur_mean = sum(tensorboard_logs[metric]) / len(tensorboard_logs[metric])
