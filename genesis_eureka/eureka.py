@@ -84,7 +84,7 @@ def main(cfg):
                 break
             for attempt in range(1000):
                 try:
-                    response_cur = generate_reward_functions(model, messages, chunk_size, None)
+                    response_cur = generate_reward_functions(model, messages, chunk_size)
                     total_samples += chunk_size
                     break
                 except Exception as e:
