@@ -32,7 +32,6 @@ def collect_image_paths(img_dir):
                 image_info.append((filepath, step_count))
     
     image_info.sort(key=lambda x: x[1])
-    print(image_info)
     return image_info
 
 def upload_images_to_genai(image_info: list) -> list:
@@ -70,7 +69,7 @@ def generate_reward_functions(
                     You can add other keys to track statistics e.g. `number_of_tokens`.
     '''
     TPM = 15_000
-    print(messages)
+
     choices = []
     gen_model = genai.GenerativeModel(model)
 
