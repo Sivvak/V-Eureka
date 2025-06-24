@@ -1,11 +1,22 @@
-Please carefully analyze the policy feedback and provide a new, improved reward function that can better solve the task. Some helpful tips for analyzing the policy feedback:
-    (1) If the task scores are not improving (values close to 0 are BETTER), then you must rewrite the entire reward function
-    (2) If the episode lengths are not improving, i.e. values are small or decreasing, then you must rewrite the entire reward function
-    (3) If the values for a certain reward component are near identical throughout, then this means RL is not able to optimize this component as it is written. You may consider
-        (a) Changing its scale or the value of its temperature parameter
-        (b) Re-writing the reward component
-        (c) Discarding the reward component
-    (4) If some reward components' magnitude is significantly larger, then you must re-scale its value to a proper range
-    (5) Check the images to analyze if the model fails in some specific way. Adjust reward components to avoid this specific behaviour.
-    (6) Analyze the photos of the environment for features that might be helpful at accomplishing the task that were not mentioned in the task description.
-Please analyze each existing reward component and images in the suggested manner above first, and then write the reward function code.
+**Analysis Framework**
+
+Use the following framework to guide your analysis of the policy feedback. This will form the basis of your reasoning.
+
+**1. Analyze Global Metrics (The Big Picture):**
+*   **Task Accomplishment:** Look at the task score. Is the agent successfully solving the task? If not, the current reward scheme has a fundamental flaw and likely needs a significant redesign of its core components and weights.
+*   **Episode Length:** Is the episode length appropriate for the task? Are episodes too short, indicating the agent is failing prematurely?
+
+**2. Analyze Individual Reward Components (The Details):**
+For each component in the `reward_components` dictionary, ask yourself:
+
+*   **Is it Overpowering? (Reward Dominance):** Is the magnitude of one component so much larger than all others that it's the only thing the agent cares about? This can cause the agent to find a lazy solution (e.g., maximizing an "upright" bonus by never moving). If so, you must re-scale the weights.
+*   **Is it Doing Anything? (Reward Signal Effectiveness):** Are the values for a component flat or nearly identical throughout training? This means the component is providing no useful gradient for the agent to learn from. You have three options:
+    a)  **Tweak:** Change its weight or adjust its "temperature"/scale parameter to make it more sensitive.
+    b)  **Rewrite:** Re-implement the logic of the component to better capture the desired behavior.
+    c)  **Discard:** If the component is not critical or is poorly conceived, remove it entirely.
+*   **Is it Encouraging the Right Behavior? (Goal Alignment):** Does the reward component genuinely contribute to solving the overall task? Look for "reward hacking," where the agent maximizes a component in an unintended way that *prevents* it from solving the main goal.
+
+**Your Required Response Format**
+
+*   Provide the complete, updated Python code for the _reward_eureka function.
+*   The new code must reflect your proposed changes.

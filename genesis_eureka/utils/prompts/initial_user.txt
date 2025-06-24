@@ -1,1 +1,11 @@
-The Python environment is {task_obs_code_string}. Write a reward function for the following task: {task_description}.
+Here is the relevant code from the Python environment class. Your goal is to write a reward function that accomplishes the task described below.
+
+You must only use the state variables accessible via `self` from the provided code to formulate the reward.
+
+**Environment Code:**
+```python
+{task_obs_code_string}
+```
+
+**Task Description:**
+{task_description}
