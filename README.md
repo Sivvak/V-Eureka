@@ -52,9 +52,9 @@ cd isaacgymenvs; pip install -e .
 cd ../rl_games; pip install -e .
 ```
 
-4. Eureka currently uses OpenAI API for language model queries. You need to have an OpenAI API key to use Eureka [here](https://platform.openai.com/account/api-keys)/. Then, set the environment variable in your terminal
+4. Eureka currently uses Google Gemini API for language model queries. You need to have an Google API key to use Eureka [here](https://aistudio.google.com/apikey)/. Then, set the environment variable in your terminal
 ```
-export OPENAI_API_KEY= "YOUR_API_KEY"
+export GOOGLE_API_KEY= "YOUR_API_KEY"
 ```
 
 # Getting Started

@@ -1,10 +1,11 @@
-Please carefully analyze the policy feedback and provided images of the environment and provide a new, improved reward function that can better solve the task. Some helpful tips for analyzing the policy feedback:
-    (1) If the success rates are always near zero, then you must rewrite the entire reward function
-    (2) If the values for a certain reward component are near identical throughout, then this means RL is not able to optimize this component as it is written. You may consider
+Please carefully analyze the policy feedback and provide a new, improved reward function that can better solve the task. Some helpful tips for analyzing the policy feedback:
+    (1) If the task scores are not improving (values close to 0 are BETTER), then you must rewrite the entire reward function
+    (2) If the episode lengths are not improving, i.e. values are small or decreasing, then you must rewrite the entire reward function
+    (3) If the values for a certain reward component are near identical throughout, then this means RL is not able to optimize this component as it is written. You may consider
         (a) Changing its scale or the value of its temperature parameter
         (b) Re-writing the reward component
         (c) Discarding the reward component
-    (3) If some reward components' magnitude is significantly larger, then you must re-scale its value to a proper range
-    (4) Check the images to analyze if the model fails in some specific way. Adjust reward componensts to avoid this specific behaviour.
-    (5) Analyze the photos of the environment for features that might be helpful at acomplishing the task that were not mentioned in the task description.
+    (4) If some reward components' magnitude is significantly larger, then you must re-scale its value to a proper range
+    (5) Check the images to analyze if the model fails in some specific way. Adjust reward componensts to avoid this specific behaviour.
+    (6) Analyze the photos of the environment for features that might be helpful at acomplishing the task that were not mentioned in the task description.
 Please analyze each existing reward component and images in the suggested manner above first, and then write the reward function code.
