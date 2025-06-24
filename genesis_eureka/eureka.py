@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from utils.file_utils import load_tensorboard_logs
-from utils.generate_reward_functions import generate_reward_functions
+from utils.get_response_image import generate_reward_functions
 from utils.misc import *
 
 EUREKA_ROOT_DIR = os.getcwd()
@@ -70,6 +70,9 @@ def main(cfg):
     max_success_overall = DUMMY_FAILURE
     max_reward_code_path = None
 
+    # TODO
+    image_dir = None
+
     # Eureka generation loop
     for iter in range(cfg.iteration):
         # Get Eureka response
@@ -85,7 +88,7 @@ def main(cfg):
                 break
             for attempt in range(1000):
                 try:
-                    response_cur = generate_reward_functions(model, messages, chunk_size)
+                    response_cur = generate_reward_functions(model, messages, chunk_size, image_dir)
                     total_samples += chunk_size
                     break
                 except Exception as e:
@@ -270,8 +273,15 @@ def main(cfg):
             continue
 
         # Select the best code sample based on the success rate
+
+        # TODO
+        print(successes)
+
         best_sample_idx = np.argmax(np.array(successes))
         best_content = contents[best_sample_idx]
+
+        image_dir = f'env_iter_{iter}_response_{best_sample_idx}'
+
 
         max_success = successes[best_sample_idx]
         execute_rate = np.sum(np.array(successes) >= 0.) / cfg.sample
