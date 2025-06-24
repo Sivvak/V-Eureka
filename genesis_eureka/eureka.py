@@ -14,8 +14,7 @@ from utils.misc import *
 
 EUREKA_ROOT_DIR = os.getcwd()
 GENESIS_ROOT_DIR = f"{EUREKA_ROOT_DIR}/../genesisgymenvs/genesisgymenvs"
-HOW_OFTEN_SAVE_PHOTOS = 1
-
+HOW_OFTEN_SAVE_PHOTOS = 100
 
 @hydra.main(config_path="cfg", config_name="config", version_base="1.1")
 def main(cfg):
@@ -69,8 +68,6 @@ def main(cfg):
     best_code_paths = []
     max_success_overall = DUMMY_FAILURE
     max_reward_code_path = None
-
-    # TODO
     image_dir = None
 
     # Eureka generation loop
@@ -274,15 +271,11 @@ def main(cfg):
 
         # Select the best code sample based on the success rate
 
-        # TODO
-        print(successes)
 
         best_sample_idx = np.argmax(np.array(successes))
         best_content = contents[best_sample_idx]
 
         image_dir = f'env_iter_{iter}_response_{best_sample_idx}'
-
-
         max_success = successes[best_sample_idx]
         execute_rate = np.sum(np.array(successes) >= 0.) / cfg.sample
 
