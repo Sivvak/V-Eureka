@@ -14,7 +14,7 @@ from utils.misc import *
 
 EUREKA_ROOT_DIR = os.getcwd()
 GENESIS_ROOT_DIR = f"{EUREKA_ROOT_DIR}/../genesisgymenvs/genesisgymenvs"
-HOW_OFTEN_SAVE_PHOTOS = 100
+HOW_OFTEN_SAVE_PHOTOS = 600
 
 @hydra.main(config_path="cfg", config_name="config", version_base="1.1")
 def main(cfg):

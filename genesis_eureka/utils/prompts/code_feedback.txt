@@ -6,6 +6,6 @@ Please carefully analyze the policy feedback and provide a new, improved reward 
         (b) Re-writing the reward component
         (c) Discarding the reward component
     (4) If some reward components' magnitude is significantly larger, then you must re-scale its value to a proper range
-    (5) Check the images to analyze if the model fails in some specific way. Adjust reward componensts to avoid this specific behaviour.
-    (6) Analyze the photos of the environment for features that might be helpful at acomplishing the task that were not mentioned in the task description.
+    (5) Check the images to analyze if the model fails in some specific way. Adjust reward components to avoid this specific behaviour.
+    (6) Analyze the photos of the environment for features that might be helpful at accomplishing the task that were not mentioned in the task description.
 Please analyze each existing reward component and images in the suggested manner above first, and then write the reward function code.
