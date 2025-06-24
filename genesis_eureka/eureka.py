@@ -275,7 +275,8 @@ def main(cfg):
         best_sample_idx = np.argmax(np.array(successes))
         best_content = contents[best_sample_idx]
 
-        image_dir = f'env_iter_{iter}_response_{best_sample_idx}'
+        image_dir_prefix = '\\'.join(tensorboard_logdir.split('\\')[:-2])
+        image_dir = f'{image_dir_prefix}\\photos\\env_iter_{iter}_response_{best_sample_idx}'
         max_success = successes[best_sample_idx]
         execute_rate = np.sum(np.array(successes) >= 0.) / cfg.sample
 
