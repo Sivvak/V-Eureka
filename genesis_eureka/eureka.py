@@ -317,7 +317,7 @@ def main(cfg):
             messages += [{"role": "model", "parts": responses[best_sample_idx]["message"]["parts"]}]
             messages += [{"role": "user", "parts": best_content}]
         else:
-            assert len(messages) == 4
+            messages = messages[:4] # drop all the additional messages with photos
             messages[-2] = {"role": "model", "parts": responses[best_sample_idx]["message"]["parts"]}
             messages[-1] = {"role": "user", "parts": best_content}
 
