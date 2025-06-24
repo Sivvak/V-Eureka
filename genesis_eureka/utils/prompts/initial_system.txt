@@ -5,3 +5,4 @@ the reward function signature MUST be: {task_reward_signature_string}
 Make sure the name of the function is EXACTLY the same as above.
 Make sure NOT to use the `reward_scales` dictionary! If you need any weights, you MUST figure it out by yourself!
 Make sure any new tensor or variable you introduce is on the same device as the input tensors. 
+You can also analyze the images of the environment provided to you to adjust the reward function.
