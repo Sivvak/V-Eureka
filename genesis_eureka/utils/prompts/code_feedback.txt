@@ -1,11 +1,13 @@
-Please carefully analyze the policy feedback and provide a new, improved reward function that can better solve the task. Some helpful tips for analyzing the policy feedback:
-    (1) If the task scores are not improving (values close to 0 are BETTER), then you must rewrite the entire reward function
-    (2) If the episode lengths are not improving, i.e. values are small or decreasing, then you must rewrite the entire reward function
-    (3) If the values for a certain reward component are near identical throughout, then this means RL is not able to optimize this component as it is written. You may consider
-        (a) Changing its scale or the value of its temperature parameter
-        (b) Re-writing the reward component
-        (c) Discarding the reward component
-    (4) If some reward components' magnitude is significantly larger, then you must re-scale its value to a proper range
-    (5) Check the images to analyze if the model fails in some specific way. Adjust reward components to avoid this specific behaviour.
-    (6) Analyze the photos of the environment for features that might be helpful at accomplishing the task that were not mentioned in the task description.
-Please analyze each existing reward component and images in the suggested manner above first, and then write the reward function code.
+Analyze policy feedback and write improved reward function. Instructions for thinking about the policy feedback:
+1. The CLOSER TO 0 a task score is the BETTER.
+2. NO TASK SCORE IMPROVEMENT, then REWRITE entire reward function.
+3. THE LONGER episode lengths THE BETTER.
+4. NO EPISODE LENGTH IMPROVEMTENT, then REWRITE the entire function.
+5. NO CHANGE IN REWARD COMPONENT, THEN EITHER:
+5.1. change component scale or temperature,
+5.2. rewrite component,
+5.3. remove component,
+6. If reward component too LARGE, then RESCALE.
+7. If in IMAGE you see agent FAILING in a way, add component to PREVENT FAILING behaviour.
+8. Reference environment features seen in image when writing reward components.
+Write reward function this way.
