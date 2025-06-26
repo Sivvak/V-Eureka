@@ -3,6 +3,7 @@ import shutil
 import time
 from pathlib import Path
 
+from dotenv import load_dotenv
 import google.generativeai as genai
 import hydra
 import matplotlib.pyplot as plt
@@ -15,9 +16,12 @@ from utils.misc import *
 EUREKA_ROOT_DIR = os.getcwd()
 GENESIS_ROOT_DIR = f"{EUREKA_ROOT_DIR}/../genesisgymenvs/genesisgymenvs"
 HOW_OFTEN_SAVE_PHOTOS = 600
+PHOTO_WINDOW_START= 0
+PHOTO_WINDOW_END= 5000
 
 @hydra.main(config_path="cfg", config_name="config", version_base="1.1")
 def main(cfg):
+    load_dotenv()
     workspace_dir = Path.cwd()
     logging.info(f"Workspace: {workspace_dir}")
     logging.info(f"Project Root: {EUREKA_ROOT_DIR}")
@@ -164,7 +168,9 @@ def main(cfg):
                         f"--exp_name={env_name}_{response_id}",
                         '--iter', str(iter),
                         '--response_id', str(response_id),
-                        '--how_often_save_photos', str(HOW_OFTEN_SAVE_PHOTOS)
+                        '--how_often_save_photos', str(HOW_OFTEN_SAVE_PHOTOS),
+                        '--photo_window_start', str(PHOTO_WINDOW_START),
+                        '--photo_window_end', str(PHOTO_WINDOW_END)
                     ],
                     stdout=f,
                     stderr=f,

@@ -146,11 +146,14 @@ def get_cfgs():
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-e", "--exp_name", type=str, default="go2-walking")
-    parser.add_argument("-B", "--num_envs", type=int, default=64)
+    parser.add_argument("-B", "--num_envs", type=int, default=32)
     parser.add_argument("--max_iterations", type=int, default=2)
     parser.add_argument("--iter", type=int, default=0)
     parser.add_argument("--response_id", type=str, default='0')
     parser.add_argument('--how_often_save_photos', type=int, default=-1)
+    parser.add_argument('--photo_window_start', type=int, default=0)
+    parser.add_argument('--photo_window_end', type=int, default=100)
+
     args = parser.parse_args()
 
     gs.init(logging_level="warning")
@@ -180,6 +183,8 @@ def main():
         iter=args.iter,
         response_id=args.response_id,
         how_often_save_photos=args.how_often_save_photos,
+        photo_window_start=args.photo_window_start,
+        photo_window_end=args.photo_window_end
     )
 
     runner = OnPolicyRunner(env, train_cfg, log_dir, device=gs.device)

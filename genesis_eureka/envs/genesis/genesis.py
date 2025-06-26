@@ -16,7 +16,7 @@ def gs_rand_float(lower, upper, shape, device):
 class Go2Env:
     def __init__(self, num_envs, env_cfg, obs_cfg, reward_cfg, command_cfg,
                  show_viewer=False,
-                 iter=0, response_id='0', how_often_save_photos=-1):
+                 iter=0, response_id='0', how_often_save_photos=-1, photo_window_start=1, photo_window_end=600):
         self.iter = iter
         self.response_id = response_id
 
@@ -135,6 +135,8 @@ class Go2Env:
 
         self.step_count = 0
         self.how_often_save_photos = how_often_save_photos
+        self.photo_window_start = photo_window_start
+        self.photo_window_end = photo_window_end
 
 
     def _resample_commands(self, envs_idx):
@@ -150,7 +152,8 @@ class Go2Env:
         self.scene.step()
 
         self.step_count += 1
-        if self.how_often_save_photos != -1 and self.step_count % self.how_often_save_photos == 0:
+        between = self.step_count <= self.photo_window_start and self.step_count >= self.photo_window_end
+        if between and self.how_often_save_photos != -1 and self.step_count % self.how_often_save_photos == 0:
             rgb, _, _, _ = self.cam.render()
             os.makedirs('photos', exist_ok=True)
             os.makedirs(f'photos/env_iter_{self.iter}_response_{self.response_id}', exist_ok=True)
