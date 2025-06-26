@@ -1,55 +1,55 @@
-{
+{{{
   "prompt_type": "Reward Function Analysis",
-  "instructions": {
+  "instructions": {{
     "description": "Analyze the agent's behavior and reward function using the structured framework below. Your final output must be a complete Python implementation of the updated `_reward_eureka` function.",
     "output_required": "Python code for updated `_reward_eureka()`"
-  },
-  "analysis_framework": {
-    "global_metrics": {
-      "task_accomplishment": {
+  }},
+  "analysis_framework": {{
+    "global_metrics": {{
+      "task_accomplishment": {{
         "question": "Is the agent successfully solving the task?",
         "action_if_failed": "Redesign reward weights or structure; likely fundamental flaw."
-      },
-      "episode_length": {
+      }},
+      "episode_length": {{
         "question": "Is the episode length appropriate?",
         "action_if_too_short": "Indicates early failure; revise reward components or state conditions."
-      }
-    },
-    "reward_components": {
-      "reward_dominance": {
+      }}
+    }},
+    "reward_components": {{
+      "reward_dominance": {{
         "question": "Is one component's magnitude overpowering the others?",
         "recommended_fix": "Normalize or rescale reward weights to balance priorities."
-      },
-      "reward_signal_effectiveness": {
+      }},
+      "reward_signal_effectiveness": {{
         "question": "Are component values too flat or unchanging during training?",
-        "actions": {
+        "actions": {{
           "tweak": "Adjust weight or sensitivity (e.g., scaling factor or temperature).",
           "rewrite": "Re-implement logic for better gradient or behavioral signal.",
           "discard": "Remove if the component is redundant or irrelevant."
-        }
-      },
-      "goal_alignment": {
+        }}
+      }},
+      "goal_alignment": {{
         "question": "Is the reward incentivizing the intended behavior?",
         "check_for": "Signs of reward hacking or unintended shortcuts.",
         "fix": "Rewrite or rescale to discourage undesirable exploits."
-      }
-    },
-    "environment_visuals": {
-      "defective_behavior": {
+      }}
+    }},
+    "environment_visuals": {{
+      "defective_behavior": {{
         "question": "Is there an identifiable, repeated failure pattern?",
         "action": "Create or revise a reward component to penalize or block this behavior."
-      },
-      "reward_hacking": {
+      }},
+      "reward_hacking": {{
         "question": "Is the agent exploiting the reward system undesirably?",
         "action": "Patch the exploit by adjusting the relevant reward logic or scaling."
-      },
-      "hidden_environment_cues": {
+      }},
+      "hidden_environment_cues": {{
         "question": "Are there environment features visible in the images that could be used to improve reward logic?",
         "action": "Incorporate them to improve behavior quality or goal progression."
-      }
-    }
-  },
-  "final_output_format": {
+      }}
+    }}
+  }},
+  "final_output_format": {{
     "type": "code",
     "language": "python",
     "function_name": "_reward_eureka",
@@ -58,5 +58,6 @@
       "All revised logic reflecting the analysis",
       "Self-contained code"
     ]
-  }
+  }}
+}}
 }

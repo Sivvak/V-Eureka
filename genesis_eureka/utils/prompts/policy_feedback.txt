@@ -1,13 +1,13 @@
-{
+{{
   "task": "Reward Function Evaluation",
-  "data": {
+  "data": {{
     "reward_function": "Used to train RL policy",
     "images": "Snapshots at specific timesteps",
-    "metrics": {
+    "metrics": {{
       "epoch_interval": "{epoch_freq}",
       "tracked": ["success_rate", "episode_length"],
       "stats": ["max", "mean", "min"]
-    },
+    }},
     "reward_components": "Logged over training"
-  }
-}
+  }}
+}}

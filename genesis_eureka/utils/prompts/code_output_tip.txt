@@ -1,30 +1,30 @@
-{
-  "output_specification": {
-    "return_values": {
+{{
+  "output_specification": {{
+    "return_values": {{
       "total_reward": "float (aggregated from reward components)",
       "reward_components": "dictionary (each key is a reward component name, value is its individual score)"
-    },
-    "code_format": "The full code must be returned inside a Python code block string: \"```python ... ```\""
-  },
-  "reward_function_guidelines": {
-    "normalization": {
+    }},
+    "code_format": "The full code must be returned inside a Python code block string: \\\"```python ... ```\\\""
+  }},
+  "reward_function_guidelines": {{
+    "normalization": {{
       "description": "You may apply transformations (e.g., torch.exp) to normalize the total or component rewards.",
       "note": "Each transformed reward must use a temperature parameter."
-    },
-    "temperature_parameters": {
+    }},
+    "temperature_parameters": {{
       "requirement": "Each transformed reward component must include a temperature variable.",
-      "constraints": {
+      "constraints": {{
         "declaration": "Temperature must be a named variable declared within the reward function.",
         "input_restriction": "It must NOT be an input parameter to the function."
-      }
-    },
-    "type_handling": {
+      }}
+    }},
+    "type_handling": {{
       "note": "Input variable types must match their environment usage.",
       "constraint": "Do not assign a float variable as torch.Tensor or vice versa."
-    },
-    "input_variable_constraints": {
+    }},
+    "input_variable_constraints": {{
       "allowed_scope": "Only use variables from the environment class (i.e., those with the prefix self.)",
       "prohibited_action": "Do NOT introduce any new input variables beyond the environment’s defined attributes."
-    }
-  }
-}
+    }}
+  }}
+}}

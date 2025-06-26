@@ -1,25 +1,25 @@
-{
+{{
   "role": "reward_engineer",
   "task": "Design an effective reward function for a reinforcement learning environment.",
   "goal": "Write a reward function that helps the agent learn the specified task effectively.",
-  "function_specification": {
+  "function_specification": {{
     "signature": "{task_reward_signature_string}",
     "name_enforcement": "The function name must match exactly as specified in the signature.",
     "prohibited_constructs": [
       "Do NOT use the `reward_scales` dictionary."
     ],
     "weights_policy": "If you need to apply weights to components, you must choose them yourself based on reasoning."
-  },
-  "code_constraints": {
+  }},
+  "code_constraints": {{
     "tensor_device": "Any new tensor or variable introduced must be placed on the same device as the input tensors."
-  },
-  "environment_analysis": {
+  }},
+  "environment_analysis": {{
     "supporting_materials": "You may analyze the environment images to help guide reward design.",
     "variable_usage": "Use only relevant and available variables from the environment class (with prefix `self.`) as inputs."
-  },
-  "output": {
+  }},
+  "output": {{
     "type": "code",
     "language": "python",
-    "format": "The function code must be wrapped in a Python code block: \"```python ... ```\""
-  }
-}
+    "format": "The function code must be wrapped in a Python code block: \\\"```python ... ```\\\""
+  }}
+}}
