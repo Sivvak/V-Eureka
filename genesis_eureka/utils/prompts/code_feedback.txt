@@ -1,11 +1,62 @@
-Please carefully analyze the policy feedback and provide a new, improved reward function that can better solve the task. Some helpful tips for analyzing the policy feedback:
-    (1) If the task scores are not improving (values close to 0 are BETTER), then you must rewrite the entire reward function
-    (2) If the episode lengths are not improving, i.e. values are small or decreasing, then you must rewrite the entire reward function
-    (3) If the values for a certain reward component are near identical throughout, then this means RL is not able to optimize this component as it is written. You may consider
-        (a) Changing its scale or the value of its temperature parameter
-        (b) Re-writing the reward component
-        (c) Discarding the reward component
-    (4) If some reward components' magnitude is significantly larger, then you must re-scale its value to a proper range
-    (5) Check the images to analyze if the model fails in some specific way. Adjust reward components to avoid this specific behaviour.
-    (6) Analyze the photos of the environment for features that might be helpful at accomplishing the task that were not mentioned in the task description.
-Please analyze each existing reward component and images in the suggested manner above first, and then write the reward function code.
+{
+  "prompt_type": "Reward Function Analysis",
+  "instructions": {
+    "description": "Analyze the agent's behavior and reward function using the structured framework below. Your final output must be a complete Python implementation of the updated `_reward_eureka` function.",
+    "output_required": "Python code for updated `_reward_eureka()`"
+  },
+  "analysis_framework": {
+    "global_metrics": {
+      "task_accomplishment": {
+        "question": "Is the agent successfully solving the task?",
+        "action_if_failed": "Redesign reward weights or structure; likely fundamental flaw."
+      },
+      "episode_length": {
+        "question": "Is the episode length appropriate?",
+        "action_if_too_short": "Indicates early failure; revise reward components or state conditions."
+      }
+    },
+    "reward_components": {
+      "reward_dominance": {
+        "question": "Is one component's magnitude overpowering the others?",
+        "recommended_fix": "Normalize or rescale reward weights to balance priorities."
+      },
+      "reward_signal_effectiveness": {
+        "question": "Are component values too flat or unchanging during training?",
+        "actions": {
+          "tweak": "Adjust weight or sensitivity (e.g., scaling factor or temperature).",
+          "rewrite": "Re-implement logic for better gradient or behavioral signal.",
+          "discard": "Remove if the component is redundant or irrelevant."
+        }
+      },
+      "goal_alignment": {
+        "question": "Is the reward incentivizing the intended behavior?",
+        "check_for": "Signs of reward hacking or unintended shortcuts.",
+        "fix": "Rewrite or rescale to discourage undesirable exploits."
+      }
+    },
+    "environment_visuals": {
+      "defective_behavior": {
+        "question": "Is there an identifiable, repeated failure pattern?",
+        "action": "Create or revise a reward component to penalize or block this behavior."
+      },
+      "reward_hacking": {
+        "question": "Is the agent exploiting the reward system undesirably?",
+        "action": "Patch the exploit by adjusting the relevant reward logic or scaling."
+      },
+      "hidden_environment_cues": {
+        "question": "Are there environment features visible in the images that could be used to improve reward logic?",
+        "action": "Incorporate them to improve behavior quality or goal progression."
+      }
+    }
+  },
+  "final_output_format": {
+    "type": "code",
+    "language": "python",
+    "function_name": "_reward_eureka",
+    "requirements": [
+      "Complete function definition",
+      "All revised logic reflecting the analysis",
+      "Self-contained code"
+    ]
+  }
+}

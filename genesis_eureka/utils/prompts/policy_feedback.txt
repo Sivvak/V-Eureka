@@ -1,2 +1,13 @@
-We trained a RL policy using the provided reward function code and made photos of the environment at specific timesteps.
-We also tracked the values of the individual components in the reward function as well as global policy metrics such as success rates and episode lengths after every {epoch_freq} epochs and the maximum, mean, minimum values encountered:
+{
+  "task": "Reward Function Evaluation",
+  "data": {
+    "reward_function": "Used to train RL policy",
+    "images": "Snapshots at specific timesteps",
+    "metrics": {
+      "epoch_interval": "{epoch_freq}",
+      "tracked": ["success_rate", "episode_length"],
+      "stats": ["max", "mean", "min"]
+    },
+    "reward_components": "Logged over training"
+  }
+}

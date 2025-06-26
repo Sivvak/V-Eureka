@@ -1,1 +1,26 @@
-Executing the reward function code above has the following error: {traceback_msg}. Please fix the bug and provide a new, improved reward function!
+{
+  "task": "Debug and Improve Reward Function",
+  "context": {
+    "description": "A previously provided reward function has raised an error during execution.",
+    "error": "{traceback_msg}",
+    "objective": "Identify and fix the bug causing the error, and return an improved version of the reward function."
+  },
+  "requirements": {
+    "output": {
+      "type": "code",
+      "language": "python",
+      "format": "The corrected code must be wrapped in a Python code block: \"```python ... ```\"",
+      "function_name": "_reward_eureka"
+    },
+    "correction_goals": [
+      "Fix the bug indicated in the traceback message.",
+      "Maintain or improve reward logic clarity and structure.",
+      "Preserve correct return format: (total_reward, reward_components_dict)."
+    ],
+    "constraints": [
+      "Do not introduce new input variables.",
+      "Only use environment class attributes prefixed by self.",
+      "Follow any previously specified reward design conventions (e.g., temperature use, type correctness)."
+    ]
+  }
+}
