@@ -16,6 +16,13 @@ For each component in the `reward_components` dictionary, ask yourself:
     c)  **Discard:** If the component is not critical or is poorly conceived, remove it entirely.
 *   **Is it Encouraging the Right Behavior? (Goal Alignment):** Does the reward component genuinely contribute to solving the overall task? Look for "reward hacking," where the agent maximizes a component in an unintended way that *prevents* it from solving the main goal.
 
+**3. Analyze Images of the Environment: **
+Look at the images of the environment you were provided at different timesteps and ask yourself:
+
+* **Does the agent show a specific, identifiable, defective bahaviour? If so, design a reward component that will discourage this behaviour.
+* **Use the image to check for "reward hacking" - a situation where the model achieves high rewards through undesirable behaviour. If detected, adjust the reward components to discourage this behaviour.
+* **Can you observe any facts about the environment that were not apparent from the task description? If so, you may utilize them when writing the reward function to improve agent's performance.
+
 **Your Required Response Format**
 
 *   Provide the complete, updated Python code for the _reward_eureka function.
