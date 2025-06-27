@@ -66,6 +66,41 @@ A different way to utilize LLMs for such tasks is to have them design rewards fo
 
 \section{Method}
 
+Our work extends the \textit{Eureka} framework by integrating multimodal, vision-based feedback into its feedback loop. The original method consists of three key elements:
+\begin{enumerate}
+    \item Environment as context
+    \item Evolutionary search
+    \item Reward reflection
+\end{enumerate}
+
+We propose \textit{Multimodal Eureka}, which uses vision to enhance the third stage and generate more robust and effective reward functions based on richer feedback. We believe that this approach should allow meaningful information to be collected in cases where this wasn't possible based solely on numerical metrics.
+
+% something about switching to the Genesis env should be written here
+
+\subsection{Environment as Context}
+
+The foundational step in both \textit{Eureka} and our approach is providing the Large Language Model with the environment's source code, so it could understand the state space and dynamics of the task. This allows the LLM to generate syntactically correct and semantically relevant reward functions.
+
+This process is crucial for two reasons:
+
+\begin{itemize}
+    \item By having direct access to the source code, particularly the class definition and observation function, the LLM learns the precise names, data types, and structures of the available state variables (e.g., \texttt{self.base\_lin\_vel} or \texttt{self.base\_pos}). This knowledge is essential for generating a reward code that is directly executable within the simulation environment and preventing common errors.
+    \item The variable names and logic within the source code provide semantic clues about the task's objective. This allows the Large Language Model to compose reward functions that are not just syntactically valid, but also logically aligned with solving the task. In essence, the code grounds the LLM's high-level understanding of a concept like ``walking forward'' into the specific, computable variables of the simulation.
+\end{itemize}
+
+\subsection{Evolutionary Search}
+
+Following the initial generation, our method adheres to \textit{Eureka's} evolutionary search algorithm to find the optimal reward function. This process involves the iterative generation, evaluation, and refinement of the reward code. First, the LLM generates a population of candidates for the reward function. Each candidate is then used to train a reinforcement learning policy for a set number of steps. The resulting policy's performance is evaluated using a fitness function, based on simulation metrics (e.g., success rate). The reward function that performed best in one iteration is used as a seed for the next, enabling the system to progressively discover more effective reward structures.
+
+The original research paper mentions that the algorithm ``searches for
+5 iterations with K = 16 samples per iteration''~\cite{eureka}. We tried to replicate this configuration as closely as possible. For each experiment, we ran five iterations of the search. Unfortunately, we were unable to replicate the setup perfectly due to limitations in computing power. Therefore, we decided to halve the batch size sampled on each iteration to be able to effectively run environments based on those generated reward functions in parallel without running out of memory.
+
+\subsection{Reward Reflection}
+
+The final component of \textit{Eureka} is Reward Reflection, where the LLM analyzes a summary of the policy's training dynamics to propose improvements to the reward function. This summary originally consisted of textual data, such as success rates, mean episode lengths, and the values of individual reward components over time.
+
+\textit{Multimodal Eureka} enriches the reflection process by incorporating visual data into the feedback prompt. The textual summary is augmented with \textbf{key frames}. These are images that visualise the training process at certain stages. By providing this multimodal feedback, the LLM should be able to perform more targeted and insightful reward editing. It can directly ``see'' why a policy is failing. For example, an awkward fall or incorrect movement of limbs can be detected. Based on this, it can adjust the reward function to penalize these specific, visually identifiable behaviors. This moves beyond pure code optimization to a more holistic, visually informed process of reward design.
+
 \section{Experiments}
 The main goal of our project is to build upon ideas presented in the \textit{Eureka} paper~\cite{eureka}. We would like to leverage the multimodal abilities of current SoTA LLMs and try to get even higher efficiency than in the referenced paper.
 
