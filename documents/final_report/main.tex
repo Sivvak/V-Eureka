@@ -65,6 +65,8 @@ LLMs like GPT-4 now often have auxiliary capabilities, such as also accepting ad
 
 A different way to utilize LLMs for such tasks is to have them design rewards for Reinforcement Learning programs, rather than steer the robot directly. Since the publication of the seminal Eureka paper \cite{eureka}, which describes a framework for reward design many new frameworks aiming to alleviate some of Eureka's flaws have been proposed. They include frameworks such as CARD \cite{card}, which attempts to minimize token usage in comparison with Eureka, or Text2Reward \cite{Text2Reward}, which writes code for rewards directly instead of using APIs. However, to our knowledge, no attempts to supplement Eureka with image data have been made, which appears to us to be a worthwhile endeavour.
 
+In our comparison we mainly utilized \verb|Gemma3-27B-IT| \cite{Gemma3-27B-IT} model. We also compared this model's performance with performance of models from the \verb|Gemini| family, such as \verb|Gemini 2.0 Flash-Lite| \cite{Gemini_2.0_Flash_Lite} and \verb|Gemini 2.0 Flash| \cite{Gemini_2.0_Flash}, and also \verb|Gemini 2.5 Flash| \cite{Gemini_2.5}.
+
 \section{Method}
 
 Our work extends the \textit{Eureka} framework by integrating multimodal, vision-based feedback into its feedback loop. The original method consists of three key elements:
@@ -166,7 +168,7 @@ To extend the comparison made when establishing a baseline for this project, and
 
 \subsubsection{Prompts}
 
-We tested different types of prompts for image analysis in \textit{Multimodal Eureka}. 
+We tested different types of prompts for image analysis in \textit{Multimodal Eureka}.
 
 \subsubsection*{Setup}
 
@@ -221,7 +223,7 @@ To make the comparison fair we performed each of experiments using the same conf
 \begin{itemize}
     \item 5 iterations of the algorithm loop
     \item 8 samples collected per iteration
-    \item 130 RL training iterations with 64 environments running in parallel, which resulted in around 200k total time steps for each sample 
+    \item 130 RL training iterations with 64 environments running in parallel, which resulted in around 200k total time steps for each sample
 \end{itemize}
 
 The only things that changed between the experiments were the parameters being tested described above.
@@ -346,15 +348,15 @@ Preprint,
 arXiv:2303.08774.
 
 \bibitem{Microsoft}
-N. Wake, A. Kanehira, K. Sasabuchi, J. Takamatsu and K. Ikeuchi, 
+N. Wake, A. Kanehira, K. Sasabuchi, J. Takamatsu and K. Ikeuchi,
 \href{https://ieeexplore.ieee.org/document/10235949}{\emph{ChatGPT Empowered Long-Step Robot Control in Various Environments: A Case Application}},
-in IEEE Access, vol. 11, pp. 95060-95078, 2023, 
+in IEEE Access, vol. 11, pp. 95060-95078, 2023,
 doi: 10.1109/ACCESS.2023.3310935.
 
 \bibitem{Nature}
-Mon-Williams, R., Li, G., Long, R. et al. 
+Mon-Williams, R., Li, G., Long, R. et al.
 \href{https://doi.org/10.1038/s42256-025-01005-x}{\emph{Embodied large language models enable robots to complete complex tasks in unpredictable environments.}}
-Nat Mach Intell 7, 592–601 (2025). 
+Nat Mach Intell 7, 592–601 (2025).
 
 \bibitem{TUDelft}
 L.E. Verbaan et al.
@@ -378,6 +380,27 @@ arXiv:2309.11489 2023,
 
 \bibitem{Genesis}
 Genesis Authors, \href{https://github.com/Genesis-Embodied-AI/Genesis}{\emph{Genesis: A Generative and Universal Physics Engine for Robotics and Beyond}}, 2024
+
+\bibitem{Gemma3-27B-IT}
+Gemma Team,
+\href{https://arxiv.org/abs/2503.19786}{\emph{Gemma 3 Technical Report}},
+arXiv:2503.19786
+Model Technical Report
+
+\bibitem{Gemini_2.0_Flash}
+Gemini Team,
+\href{https://storage.googleapis.com/model-cards/documents/gemini-2-flash.pdf}{\emph{Gemini 2.0 Flash Model Card}},
+Model Card
+
+\bibitem{Gemini_2.0_Flash_Lite}
+Gemini Team,
+\href{https://storage.googleapis.com/model-cards/documents/gemini-2-flash-lite.pdf}{\emph{Gemini 2.0 Flash Model Card}},
+Model Card
+
+\bibitem{Gemini_2.5}
+Gemini Team,
+\href{https://storage.googleapis.com/deepmind-media/gemini/gemini_v2_5_report.pdf}{\emph{Gemini 2.5 Technical Report}},
+Model Technical Report
 
 \end{thebibliography}
 
