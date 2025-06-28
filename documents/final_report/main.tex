@@ -129,7 +129,7 @@ $$
 
 where $v_{commanded}$ is a predefined constant velocity, $v_i$ is the actual velocity in the moment $i$ and $MSE$ is \textit{Mean Square Error}.
 
-The lower the value of $consecutive\_successes$, the better the policy. Such a definition was selected in order to reproduce results for similar environments in the original \textit{Eureka} paper.
+The higher the value of $consecutive\_successes$, the better the policy. Such a definition was selected in order to reproduce results for similar environments in the original \textit{Eureka} paper.
 
 \section{Experiments}
 
@@ -200,7 +200,7 @@ We wanted to test how \textit{Mutimodal Eureka} handles images from the beginnin
 
 In each case, the photos where taken in equal intervals for a given number of steps.
 
-\subsubsection{Image quality}
+\subsubsection{Image resolution}
 
 We checked the impact of image quality on the $consecutive\_successes$.
 
@@ -364,12 +364,45 @@ In Table \ref{tab:prompts_successes}, we can observe that the model performed be
 
 In Table  \ref{tab:prompts_reward_components}, we may also see that different prompting styles did not lead to models creating more or less complex rewards, as the number of reward components stays the same across different prompting styles.
 
+\subsection{Number of images}
+
+% TODO - Szymon
+
+\subsection{Image resolution}
+
+As we can see in Figure~\ref{fig:image_quality}, the quality of an image does not chnage much in terms of performance. As long as the environment is clearly visible, the results are quite similar. Probably only one run was just unlucky and received lower mean od $consecutive\_succeses$ during five evaluation runs. Other than that, there is no correlation.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{image_quality.png}
+    \caption{Comparison of mean consecutive successes metric calculated from five runs of the final evaluation for different image resolutions. Higher values are better.}
+    \label{fig:image_quality}
+\end{figure}
+
+As we can see in table~\ref{tab:image_quality_errors}, also the number of uncompiling reward functions does not depend on the image resolution. It can be high both for low and high resolution images (160x120 vs 1280x1920). What is important, the high image resolution does not alter \textit{Multimodal Eureka} performance in a bad way (e.g. by focusing reward function on semantical meaning instead of Python syntax correctness).
+
+\begin{table}
+    \centering
+    \begin{tabular}{|l|c|}
+        \hline
+        Image resolution               & Number of errors \\
+        \hline
+        160x120                   & 5   \\
+        320x240                   & 2   \\
+        640x480                   & 4   \\
+        1280x960                  & 5   \\
+        2560x1920                 & 0   \\
+        \hline
+    \end{tabular}
+    \caption{The number of errors (uncompiling reward functions) in the last Eureka iteration (out of 8 samples).}
+    \label{tab:image_quality_errors}
+\end{table}
 
 \section{Conclusions}
 
 From our preliminary study we may conclude that the approach proposed by us, \textit{Multimodal Eureka}, appears to be promising, as the multimodal models consistently outperform the baseline approach according to the \verb|consecutive successes| metric. More experiments, especially across different environments, would have to be conducted to confirm conclusively that \textit{Multimodal Eureka} is indeed superior. We hope that the work done by us to expand Eureka by adding compatibility with Genesis environments will be helpful in this endeavour.
 
-Bigger, more capable models would likely need to be used, as our experiments show that the some of the smaller, publicly available ones are insufficient and the rewards created by them appear to fail to converge. Compute for RL training also appeared to be sometimes insufficient to train policies to the point where they could produce satisfactory results and would likely need to be highly increased as well.
+Bigger, more capable models would likely need to be used, as our experiments show that some of the smaller, publicly available ones are insufficient and the rewards created by them appear to fail to converge. Compute for RL training also appeared to be sometimes insufficient to train policies to the point where they could produce satisfactory results and would likely need to be highly increased as well.
 
 The work done by us to find the optimal image taking strategy and image quality may be useful in setting the course of such future experiments.
 
