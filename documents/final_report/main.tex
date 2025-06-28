@@ -59,7 +59,7 @@ We call this extension \textbf{Multimodal Eureka}. Our approach augments the rew
 
 
 \section{Related Work}
-Recently, increasingly powerful large language models are being developed, like OpenAI GPT-4 \cite{GPT-4} or Gemini \cite{Gemini}. One area in which such models can be utilized is robot control. In a work done at Microsoft \cite{Microsoft}, a model is prompted to steer a robot via generated code to accomplish a given task, with model having a textual description of the environment at its disposal.
+Recently, increasingly powerful large language models are being developed, like OpenAI GPT-4 \cite{GPT-4} or Gemini \cite{Gemini}. One area in which such models can be utilized is robot control. In a work done at Microsoft \cite{Microsoft}, a model is prompted to steer a robot via generated code to accomplish a given task, with model having a textual description of the environment at its disposal. 
 
 LLMs like GPT-4 now often have auxiliary capabilities, such as also accepting additional image data, which is utilized to increase the accuracy of LLMs in robot control tasks. For instance, the work \cite{TUDelft}, is a simple expansion of the previously quoted Microsoft paper, while a more recent article in Nature \cite{Nature} is a more advanced framework for steering robots, also utilizing GPT-4 with image data.
 
@@ -341,10 +341,10 @@ To verify this further, we also compared both approaches in the extended variant
         \hline
     \end{tabular}
     \caption{Mean consecutive successes metric calculated from five runs of the final evaluation for each prompt experiment. Higher values are better.}
-    \label{tab:baseline_results}
+    \label{tab:prompts_successes}
 \end{table}
 
-We can observe that the model performed better when given structured prompts, instead of those expressed with natural language. This is in line with our general expectations of model behaviour. It would likely be beneficial to use \verb|JSON| format for prompts in all future experiments utilizing Eureka method.
+In Table \ref{tab:prompts_successes}, we can observe that the model performed better when given structured prompts, instead of those expressed with natural language. This is in line with our general expectations of model behaviour. It would likely be beneficial to use \verb|JSON| format for prompts in all future experiments utilizing Eureka method.
 
 \begin{table}
     \centering
@@ -359,10 +359,10 @@ We can observe that the model performed better when given structured prompts, in
         \hline
     \end{tabular}
     \caption{The number of components of the reward created by model for RL training.}
-    \label{tab:baseline_results}
+    \label{tab:prompts_reward_components}
 \end{table}
 
-We may also see that different prompting styles did not lead to models creating more or less complex rewards, as the number of reward components stays the same across different prompting styles.
+In Table  \ref{tab:prompts_reward_components}, we may also see that different prompting styles did not lead to models creating more or less complex rewards, as the number of reward components stays the same across different prompting styles.
 
 
 \section{Conclusions}
