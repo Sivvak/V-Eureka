@@ -4,6 +4,7 @@
 \usepackage{graphicx}
 \usepackage{amsmath,amssymb}
 \usepackage{hyperref}
+\usepackage{float}
 
 \geometry{
   top=0.65in,
@@ -101,51 +102,48 @@ The final component of \textit{Eureka} is Reward Reflection, where the LLM analy
 
 \textit{Multimodal Eureka} enriches the reflection process by incorporating visual data into the feedback prompt. The textual summary is augmented with \textbf{key frames}. These are images that visualise the training process at certain stages. By providing this multimodal feedback, the LLM should be able to perform more targeted and insightful reward editing. It can directly ``see'' why a policy is failing. For example, an awkward fall or incorrect movement of limbs can be detected. Based on this, it can adjust the reward function to penalize these specific, visually identifiable behaviors. This moves beyond pure code optimization to a more holistic, visually informed process of reward design.
 
+\section{Environment}
+
+The physical platform used in experiments is Genesis~\cite{Genesis}. It was necessary to change the deafault Eureka environment - IsaacGym~\cite{isaac_gym} - because it is both no longer supported and available only on Linux (part of our team uses Windows on daily basis).
+
+Genesis allows you to create your own training environments which can be further enhanced in future experiments. We decided to adjust \textit{Unitree Go2 quadruped robot environment} (shown in Figure~\ref{fig:environment}).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{environment.png}
+    \caption{\textit{Unitree Go2 quadruped robot environment.}}
+    \label{fig:environment}
+\end{figure}
+
+It is a rather intuitive environment. Simultaneously it is quite complex, with 12 joints and middle-height center of gravity.
+
+The task description in \textit{Mutimodal Eureka} is \emph{"to make the Unitree Go2 quadruped robot walk forward"}. The \textit{consecutive\_successes} metric which is used to evaluate the quality of the solution is defined as follows:
+
+$$
+consecutive\_successes = -MSE(v_{commanded}, v_i),
+$$
+
+where $v_{commanded}$ is a predefined constant velocity, $v_i$ is the actual velocity in the moment $i$ and $MSE$ is \textit{Mean Square Error}.
+
+The lower the value of $consecutive\_successes$, the better the policy. Such a definition was selected in order to reproduce results for similar environments in the original \textit{Eureka} paper.
+
 \section{Experiments}
-The main goal of our project is to build upon ideas presented in the \textit{Eureka} paper~\cite{eureka}. We would like to leverage the multimodal abilities of current SoTA LLMs and try to get even higher efficiency than in the referenced paper.
 
-In the original work, \textit{Eureka} was compared with L2R~\cite{l2r}, human-written rewards created by active reinforcement learning researchers, and sparse rewards (success/failure). \textbf{The main purpose of our experiments is to compare \textit{Multimodal Eureka} with the original \textit{Eureka} itself.} Because \textit{Eureka} has already been compared with the aforementioned baselines, we do not see a reason to check other baselines. We aim to achieve better results than in the original paper by leveraging the power of computer vision, particularly in terms of spatial understanding.
+\subsection{Goal}
 
-To check the results, we will conduct a series of experiments.
+The main goal of our project is to build upon ideas presented in the \textit{Eureka} paper~\cite{eureka}. We try to leverage the multimodal abilities of current SoTA LLMs and get even higher efficiency than in the referenced paper.
 
-\begin{itemize}
-    \item We will calculate \textit{Success Rate} for both algorithms for multiple environments. However, we probably won't include those used in the original paper (e.g. \textit{Isaac Gym}~\cite{isaac_gym}), as they're quite old, no longer maintained, and therefore hard to use. Instead, we'll try to focus on leveraging the \textit{K-Sim}~\cite{ksim_repo} RL training library for humanoid locomotion and manipulation.
-    \item We will test different types of prompts for image analysis in \textit{Multimodal Eureka} and choose the best one in terms of the average \textit{Success Rate}.
-    \item The experiments will probably require a large model, so our choice of LLM will depend on what we can access. We will consider using multimodal \textit{Gemini} and \textit{GPT} models.
-    \item We will experiment with different numbers of input images (e.g. last few frames).
-    \item We will check the impact of image quality on the \textit{Success Rate}.
-\end{itemize}
+In the original work, \textit{Eureka} was compared with L2R~\cite{l2r}, human-written rewards created by active reinforcement learning researchers, and sparse rewards (success/failure). \textbf{The main purpose of our experiments is to compare \textit{Multimodal Eureka} with the original \textit{Eureka} itself.} Because \textit{Eureka} has already been compared with the aforementioned baselines, we do not see a reason to check other baselines. We sometimes achieve better results than in the original paper by leveraging the power of computer vision, particularly in terms of spatial understanding.
 
-Our goal is to find the best possible solution. The primary challenge lies in creating prompts that will enable the model to extract the most crucial information from the images. The second challenge is to make the solution as general as possible. The original \textit{Eureka} uses the same set of prompts for each environment, and we would like to fulfill this requirement too.
+\subsection{List of experiments}
 
-To explain to the reader what the aim of \textit{image prompts} is, let us show an example of what a simplified version of a prompt could look like:
-\\\\
-\texttt{Based on an input image and instructions from the initial\_system prompt~\footnote{initial\_system prompt is a fragment from source code repository~\cite{eureka_repo} describing an agent his role and expected output}, create an optimal reward function, which will allow the agent to solve the environment efficiently. Take into consideration the laws of physics and try to connect variable names from the source code with what you see in the provided pictures.}
-\\\\
-Different prompts can lead to various unexpected behaviors. Therefore, we will try to identify such cases and list the most interesting observations. If we get meaningful results for situations with a clear physical explanation, we will list them in the final report as well.
+To check the results, we conduct a series of experiments.
 
-\section{Results and Discussion}
+\subsubsection{Baseline}
 
-In this section we present results obtained both by running the \textit{Multimodal Eureka} and the original \textit{Eureka} in the aforementioned \textit{Genesis} environment. The latter were collected for two main reasons:
+We calculated $consecutive\_successes$ for baseline algorithm for \textit{Unitree Go2 quadruped robot environment}. The goal was to create a first working solution and check what results it gives for Genesis environment.
 
-\begin{enumerate}
-    \item To check whether we're able to reproduce the results of the original \textit{Eureka} research paper
-    \item To establish a baseline and thus enable a comparison between those methods to draw reasonable conclusions
-\end{enumerate}
-
-To make the comparison fair we performed each of those experiments using the same configuration, i.e.:
-
-\begin{itemize}
-    \item 5 iterations of the algorithm loop
-    \item 8 samples collected per iteration
-    \item 130 RL training iterations with 64 environments running in parallel, which resulted in around 200k total time steps for each sample 
-\end{itemize}
-
-The only things that changed between the experiments were the parameters being tested, such as the frequency of photo sampling or the LLM used.
-
-\subsection{Baseline}
-
-\subsubsection{Setup}
+\subsubsection*{Setup}
 
 In order to establish a meaningful baseline, we performed a series of experiments, each using a different LLM as a backbone. For this experiment, we did not add any visual feedback to the pipeline. Essentially, we reproduced the original Eureka setup, but in a different environment and with different LLMs. The models we've tested were from Google. In particular, we used four different models:
 
@@ -156,9 +154,90 @@ In order to establish a meaningful baseline, we performed a series of experiment
     \item Gemini 2.5 Flash
 \end{enumerate}
 
-This choice was purely pragmatic as Google offers a pretty wide range of models with decent quotas completely for free. We decided to test these four models because they seemed to be powerful enough to create effective reward functions while being sufficiently diverse (in terms of size and efficiency) for the sake of experimenting. Each of these models also has solid multimodal capabilities. We didn't test smaller models of the Gemma family because we were afraid that they wouldn't be capable of working in such a setup effectively.
+This choice was purely pragmatic as Google offers a pretty wide range of models with decent quotas completely for free. We decided to test these four models because they seemed to be powerful enough to create effective reward functions while being sufficiently diverse (in terms of size and efficiency) for the sake of experimenting. Each of these models also has solid multimodal capabilities. We didn't test smaller models of the Gemma family because we were afraid that they wouldn't be capable of working in such a setup effectively
 
-\subsubsection{Results and Conclusions}
+\subsubsection{Multimodal LLMs comparison}
+
+We calculated $consecutive\_successes$ for \textit{Multimodal Eureka} for \textit{Unitree Go2 quadruped robot environment}. We compared the results to the baseline and formulated the conclusions.\textbf{ This is the key section of our work.}
+
+\subsubsection*{Setup}
+
+To extend the comparison made when establishing a baseline for this project, and reasonably test whether the addition of vision actually encouraged models to produce more robust reward functions,  we decided to perform a comparison of LLM backbones also for the setup with vision included. The core configuration of the experiments remained exactly the same as in baseline part. In terms of visual feedback, we decided to collect 5 images per training, one every 600 iterations.
+
+\subsubsection{Prompts}
+
+We tested different types of prompts for image analysis in \textit{Multimodal Eureka}. 
+
+\subsubsection*{Setup}
+
+Inspired by the contents of second NLP homework (Bomb defusal agents), we decided to test different prompt formatting patterns and see whether it impacts \textit{Multimodal Eureka} performance or not. Below are presented prompt types we considered.
+
+\begin{enumerate}
+    \item \textit{Baseline Eureka} prompts enhanced with vision queries,
+    \item JSON,
+    \item Markdown,
+    \item Forceful language\footnote{The prompt included capital letters for more imporatant parts of the prompt. We also changed all soft expressions into hard like \textit{"you may"} into \textit{you must} etc.}.
+\end{enumerate}
+
+\subsubsection{Number of images}
+
+We experimented with different image capturing frequencies from various moments of the simulation.
+
+\subsubsection*{Setup}
+
+We wanted to test how \textit{Mutimodal Eureka} handles images from the beginnig/middle/end of simulation. Furthermore we wanted to see whether the capturing frequency has the impact on the results. Thus, we came up with the following parameters:
+
+\begin{enumerate}
+    \item 4 photos from the first 400 steps,
+    \item 4 photos from the middle 400 steps,
+    \item 4 photos from the last 400 steps,
+    \item 4 photos from the last 4 steps.
+\end{enumerate}
+
+In each case, the photos where taken in equal intervals for a given number of steps.
+
+\subsubsection{Image quality}
+
+We checked the impact of image quality on the $consecutive\_successes$.
+
+\subsubsection*{Setup}
+
+The default quality for image capturing in \textit{Genesis} is 1280x960. This seems like a reasonable image quality that both shows well everything that should be visible in the picture and does not require too many tokens. However, we expected image quality not to have a significant impact on the results. In order to verify this, we tested \textit{Multimodal Eureka} on a wide range of resolutions:
+
+\begin{enumerate}
+    \item 160 x 120 px,
+    \item 320 x 240 px,
+    \item 640 x 480 px,
+    \item 1280 x 960 px,
+    \item 2560 x 1920 px.
+\end{enumerate}
+
+\noindent For each of the camera setups we used $fov=30$.
+
+\subsection{General setup}
+
+To make the comparison fair we performed each of experiments using the same configuration, i.e.:
+
+\begin{itemize}
+    \item 5 iterations of the algorithm loop
+    \item 8 samples collected per iteration
+    \item 130 RL training iterations with 64 environments running in parallel, which resulted in around 200k total time steps for each sample 
+\end{itemize}
+
+The only things that changed between the experiments were the parameters being tested described above.
+
+\section{Results and Discussion}
+
+In this section we present results obtained both by running the \textit{Multimodal Eureka} and the original \textit{Eureka} in the aforementioned \textit{Genesis} environment. The latter were collected for two main reasons:
+
+\begin{enumerate}
+    \item To check whether we're able to reproduce the results of the original \textit{Eureka} research paper
+    \item To establish a baseline and thus enable a comparison between those methods to draw reasonable conclusions
+\end{enumerate}
+
+With these things in mind, we were able to analyze the results in the subsections below.
+
+\subsection{Baseline}
 
 \begin{table}
     \centering
@@ -209,12 +288,6 @@ These results also show that, while larger LLMs have the potential to generate q
 
 \subsection{Multimodal LLMs Comparison}
 
-\subsubsection{Setup}
-
-To extend the comparison made when establishing a baseline for this project, and reasonably test whether the addition of vision actually encouraged models to produce more robust reward functions,  we decided to perform a comparison of LLM backbones also for the setup with vision included. The core configuration of the experiments remained exactly the same. In terms of visual feedback, we decided to collect 5 images per training, one every 600 iterations.
-
-\subsubsection{Results and Conclusions}
-
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{baseline_vs_vision_model_comparison.png}
@@ -251,21 +324,20 @@ To verify this further, we also compared both approaches in the extended variant
 
 \section{Conclusions}
 
-\begin{thebibliography}{9}
+\begin{thebibliography}{15}
 \bibitem{eureka}
-Yecheng Jason Ma and William Liang and Guanzhi Wang and De-An Huang and Osbert Bastani and Dinesh Jayaraman and Yuke Zhu and Linxi Fan and Anima Anandkumar, \emph{Eureka: Human-Level Reward Design via Coding Large Language Models}. arXiv preprint: Arxiv-2310.12931, 2023
+Yecheng Jason Ma and William Liang and Guanzhi Wang and De-An Huang and Osbert Bastani and Dinesh Jayaraman and Yuke Zhu and Linxi Fan and Anima Anandkumar, \href{https://arxiv.org/abs/2310.12931}{\emph{Eureka: Human-Level Reward Design via Coding Large Language Models}}. arXiv preprint: Arxiv-2310.12931, 2023
 \bibitem{l2r}
-Wenhao Yu, Nimrod Gileadi, Chuyuan Fu, Sean Kirmani, Kuang-Huei Lee, Montse Gonzalez Arenas, Hao-Tien Lewis Chiang, Tom Erez, Leonard Hasenclever, Jan Humplik, et al. \emph{Language to rewards for robotic skill synthesis}. arXiv preprint arXiv:2306.08647, 2023.
+Wenhao Yu, Nimrod Gileadi, Chuyuan Fu, Sean Kirmani, Kuang-Huei Lee, Montse Gonzalez Arenas, Hao-Tien Lewis Chiang, Tom Erez, Leonard Hasenclever, Jan Humplik, et al. \href{https://arxiv.org/abs/2306.08647}{\emph{Language to rewards for robotic skill synthesis}}. arXiv preprint arXiv:2306.08647, 2023.
 \bibitem{isaac_gym}
 Viktor Makoviychuk, Lukasz Wawrzyniak, Yunrong Guo, Michelle Lu, Kier Storey, Miles Macklin,
-David Hoeller, Nikita Rudin, Arthur Allshire, Ankur Handa, et al. \emph{Isaac gym: High performance
-gpu-based physics simulation for robot learning}. arXiv preprint arXiv:2108.10470, 2021.
+David Hoeller, Nikita Rudin, Arthur Allshire, Ankur Handa, et al. \href{https://arxiv.org/pdf/2108.10470}{\emph{Isaac gym: High performance
+gpu-based physics simulation for robot learning}}. arXiv preprint arXiv:2108.10470, 2021.
 \bibitem{eureka_repo}
-Yecheng Jason Ma and William Liang, \emph{Eureka Repository on GitHub}, https://github.com/eureka-research/Eureka
+Yecheng Jason Ma and William Liang, \href{https://github.com/eureka-research/Eureka}{\emph{Eureka Repository on GitHub}}, 2023
 
 \bibitem{ksim_repo}
-K-Scale Labs, \emph{K-Sim Repository on GitHub}
-https://github.com/kscalelabs/ksim
+K-Scale Labs, \href{https://github.com/kscalelabs/ksim}{\emph{K-Sim Repository on GitHub}}, 2025
 
 \bibitem{GPT-4}
 OpenAI,
@@ -303,6 +375,9 @@ arXiv:2410.14660, 2024
 Tianbao Xie, Siheng Zhao, Chen Henry Wu, Yitao Liu, Qian Luo, Victor Zhong, Yanchao Yang, Tao Yu,
 \href{https://doi.org/10.48550/arXiv.2309.11489}{\emph{Text2Reward: Reward Shaping with Language Models for Reinforcement Learning}},
 arXiv:2309.11489 2023,
+
+\bibitem{Genesis}
+Genesis Authors, \href{https://github.com/Genesis-Embodied-AI/Genesis}{\emph{Genesis: A Generative and Universal Physics Engine for Robotics and Beyond}}, 2024
 
 \end{thebibliography}
 
