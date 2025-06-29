@@ -43,19 +43,19 @@
 \begin{minipage}{0.90\linewidth}
 \small
 
-Eureka is a recent framework where large language models generate reward functions for reinforcement learning agents using only code-level environment descriptions. We want to extend this approach by introducing \textbf{Multimodal Eureka}, which supplements the model with visual input to improve its intuitive understanding of tasks. This mimics how humans better comprehend situations when both visual and textual information are available. We plan on evaluating our method on several control environments, assessing whether visual context can lead to higher-quality rewards and improved success rates in complex tasks.
+Eureka is a recent framework where large language models generate reward functions for reinforcement learning agents using only code-level environment descriptions. We extended this approach by introducing \textbf{Multimodal Eureka}, which supplements the model with visual input to improve its intuitive understanding of tasks. This mimics how humans better comprehend situations when both visual and textual information are available. We evaluated our method on several control environments, assessing whether visual context can lead to higher-quality rewards and improved success rates in complex tasks.
 
 \end{minipage}
 \end{center}
 
 \section{Introduction}
-Large language models have demonstrated impressive capabilities as semantic planners for high-level decision-making tasks. Recently, effort has been made to utilise them for low-level motor control—such as dexterous manipulation and precision tasks—remains. One example of such work is the Eureka framework \cite{eureka} that addresses part of this gap by using LLMs to automatically generate and evolve reward functions through in-context learning and evolutionary optimization.
+Large language models have demonstrated impressive capabilities as semantic planners for high-level decision-making tasks. Recently, efforts have been made to utilize them for low-level motor control—such as dexterous manipulation and precision tasks—though challenges remain. One example of such work is the Eureka framework \cite{eureka}, which addresses part of this gap by using LLMs to automatically generate and evolve reward functions through in-context learning and evolutionary optimization.
 
 Eureka has been shown to outperform human-crafted rewards on 83\% of 29 benchmark tasks, including several involving hand-based control, without requiring task-specific templates or prior tuning. Despite its success, Eureka operates exclusively on internal state inputs (e.g., joint angles, velocities), which limits its effectiveness in tasks where visual perception plays a central role.
 
-In many real-world robotic applications, visual input is essential for interacting with objects in unstructured environments, resolving occlusions, and aligning actions based on external context. To address this limitation, we propose to extend Eureka with visual capabilities—enabling it to generate and refine reward functions based on visual observations in addition to internal state.
+In many real-world robotic applications, visual input is essential for interacting with objects in unstructured environments, resolving occlusions, and aligning actions based on external context. To address this limitation, we extended Eureka with visual capabilities—enabling it to generate and refine reward functions based on visual observations in addition to internal state.
 
-We call this extension \textbf{Multimodal Eureka}. Our approach augments the reward design process with visual inputs by leveraging multimodal large language models capable of interpreting both code and image data. While most relevant information can theoretically be inferred from environment code and variable names, we hypothesize that visual representations help the model build a more intuitive understanding of the task—similarly to how a human benefits from seeing a situation rather than imagining it solely from description. We hypothesize that this added context can improve the model’s ability to generate more aligned and effective reward functions in tasks where spatial reasoning or object interaction plays a key role.
+We call this extension Multimodal Eureka. Our approach enhances the reward design process by incorporating visual inputs, leveraging multimodal large language models capable of interpreting both code and image data. While most relevant information can theoretically be inferred from environment code and variable names, visual representations help the model form a more intuitive understanding of the task—much like how humans benefit from seeing a situation rather than imagining it solely from a description. In our experiments, this additional context improved the model’s ability to generate more aligned and effective reward functions, particularly in tasks involving spatial reasoning or object interaction—provided the model was sufficiently capable. However, we believe further experiments are necessary to validate these findings, as our current results are limited by compute constraints.
 
 
 \section{Related Work}
@@ -364,13 +364,21 @@ In Table \ref{tab:prompts_successes}, we can observe that the model performed be
 
 In Table  \ref{tab:prompts_reward_components}, we may also see that different prompting styles did not lead to models creating more or less complex rewards, as the number of reward components stays the same across different prompting styles.
 
-\subsection{Number of images}
+\subsection{Number of Images}
+We hypothesized that images should be spaced far enough apart to capture noticeable changes in the scene, but not so far that the movement between frames becomes difficult to infer. Based on this, we chose to sample images every 100 steps. For comparison, we also conducted a test where images were taken from the last 4 steps.
 
-% TODO - Szymon
+Additionally, we wanted to assess whether capturing images from the beginning, middle, or end of the episode would yield the best results. Intuitively, at the start, not much is visible; the middle might reveal causes of potential failure; and at the end, it might sometimes be too late to diagnose failure reasons. However, as shown in Figure~\ref{fig:image_sampling}, the image sampling strategy does not significantly affect performance, although sampling every 100 steps from the middle yielded the best results.
+
+\begin{figure}
+\centering
+\includegraphics[width=1\linewidth]{image_sampling_method_comparison.png}
+\caption{Comparison of mean consecutive successes metric calculated from five runs of the final evaluation for different image sampling methods. Higher values indicate better performance.}
+\label{fig:image_sampling}
+\end{figure}
 
 \subsection{Image resolution}
 
-As we can see in Figure~\ref{fig:image_quality}, the quality of an image does not chnage much in terms of performance. As long as the environment is clearly visible, the results are quite similar. Probably only one run was just unlucky and received lower mean od $consecutive\_succeses$ during five evaluation runs. Other than that, there is no correlation.
+As we can see in Figure~\ref{fig:image_quality}, the quality of an image does not change much in terms of performance. As long as the environment is clearly visible, the results are quite similar. Probably only one run was just unlucky and received lower mean od $consecutive\_succeses$ during five evaluation runs. Other than that, there is no correlation.
 
 \begin{figure}
     \centering
@@ -400,13 +408,15 @@ As we can see in table~\ref{tab:image_quality_errors}, also the number of uncomp
 
 \section{Conclusions}
 
-From our preliminary study we may conclude that the approach proposed by us, \textit{Multimodal Eureka}, appears to be promising, as the multimodal models consistently outperform the baseline approach according to the \verb|consecutive successes| metric. More experiments, especially across different environments, would have to be conducted to confirm conclusively that \textit{Multimodal Eureka} is indeed superior. We hope that the work done by us to expand Eureka by adding compatibility with Genesis environments will be helpful in this endeavour.
+From our preliminary study, we may conclude that the approach proposed by us, Multimodal Eureka, appears to be promising, as the multimodal models consistently outperform the baseline approach according to the \verb|consecutive_successes| metric. More experiments, especially across different environments, would need to be conducted to confirm conclusively that Multimodal Eureka is indeed superior. We hope that the work we have done to expand Eureka by adding compatibility with Genesis environments will be helpful in this endeavour.
 
-Bigger, more capable models would likely need to be used, as our experiments show that some of the smaller, publicly available ones are insufficient and the rewards created by them appear to fail to converge. Compute for RL training also appeared to be sometimes insufficient to train policies to the point where they could produce satisfactory results and would likely need to be highly increased as well.
+Bigger, more capable models will likely need to be used, as our experiments show that some of the smaller, publicly available ones are insufficient, and the rewards created by them often fail to converge. Compute for RL training also appeared to be sometimes insufficient to train policies to the point where they could produce satisfactory results, and would likely need to be significantly increased as well.
 
-The work done by us to find the optimal image taking strategy and image quality may be useful in setting the course of such future experiments.
+The work we have done to find the optimal image-taking strategy and image quality may be useful in guiding future experiments.
 
-Looking at recordings of robot performance allowed us to notice that one of the best-performing robot instances achieved high success rates through a strategy that might be regarded as reward hacking - this suggested the possibility that a similar phenomenon occurred in the original Eureka paper experiments. Future research on \textit{Multimodal Eureka} would therefore likely require reevaluating the experiments in original Eureka against success metrics more robust against reward hacking.
+By watching recordings of robot performance, we observed that one of the best-performing robot instances achieved high success rates using a strategy that could be considered reward hacking. This suggests that a similar phenomenon may have occurred in the original Eureka paper experiments. Future research on Multimodal Eureka would therefore benefit from reevaluating the original Eureka experiments using success metrics that are more robust against reward hacking.
+
+
 
 
 \begin{thebibliography}{15}
