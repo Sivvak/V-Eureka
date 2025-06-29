@@ -402,13 +402,13 @@ As we can see in Table~\ref{tab:image_quality_errors}, the number of non-compili
         2560x1920                 & 0   \\
         \hline
     \end{tabular}
-    \caption{The number of errors (uncompiling reward functions) in the last Eureka iteration (out of 8 samples).}
+    \caption{The number of errors (non-compiling reward functions) in the last Eureka iteration (out of 8 samples).}
     \label{tab:image_quality_errors}
 \end{table}
 
 \section{Conclusions}
 
-From our preliminary study, we may conclude that the approach proposed by us, \textit{Multimodal Eureka}, appears to be promising, as the multimodal models consistently outperform the baseline approach according to the \verb|consecutive_successes| metric. More experiments, especially across different environments, would need to be conducted to confirm conclusively that \textit{Multimodal Eureka} is indeed superior. We hope that the work we have done to expand Eureka by adding compatibility with Genesis environments will be helpful in this endeavour.
+From our preliminary study, we may conclude that the approach proposed by us, \textit{Multimodal Eureka}, appears to be promising, as the multimodal models show a tendency to outperform the baseline approach according to the \verb|consecutive_successes| metric. More experiments, especially across different environments, would need to be conducted to confirm conclusively that \textit{Multimodal Eureka} is indeed superior. We hope that the work we have done to expand Eureka by adding compatibility with Genesis environments will be helpful in this endeavour.
 
 Bigger, more capable models will likely need to be used, as our experiments show that some of the smaller, publicly available ones are insufficient, and the rewards created by them often fail to converge. Compute for RL training also appeared to be sometimes insufficient to train policies to the point where they could produce satisfactory results, and would likely need to be significantly increased as well.
 
