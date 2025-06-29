@@ -378,7 +378,7 @@ Additionally, we wanted to assess whether capturing images from the beginning, m
 
 \subsection{Image resolution}
 
-As we can see in Figure~\ref{fig:image_quality}, the quality of an image does not change much in terms of performance. As long as the environment is clearly visible, the results are quite similar. Probably only one run was just unlucky and received lower mean od $consecutive\_succeses$ during five evaluation runs. Other than that, there is no correlation.
+As we can see in Figure~\ref{fig:image_quality}, the quality of an image does not change much in terms of performance. As long as the environment is clearly visible, the results are quite similar. Probably only one run was just unlucky and received a lower mean of $consecutive\_succeses$ during the five evaluation runs. Other than that, there is no correlation.
 
 \begin{figure}
     \centering
@@ -387,7 +387,7 @@ As we can see in Figure~\ref{fig:image_quality}, the quality of an image does no
     \label{fig:image_quality}
 \end{figure}
 
-As we can see in table~\ref{tab:image_quality_errors}, also the number of uncompiling reward functions does not depend on the image resolution. It can be high both for low and high resolution images (160x120 vs 1280x1920). What is important, the high image resolution does not alter \textit{Multimodal Eureka} performance in a bad way (e.g. by focusing reward function on semantical meaning instead of Python syntax correctness).
+As we can see in Table~\ref{tab:image_quality_errors}, the number of non-compiling reward functions also does not depend on the image resolution. It can be high for both low and high resolution images (160x120 vs 1280x1920). What is important, the high image resolution does not alter \textit{Multimodal Eureka} performance in a bad way (e.g. by focusing the reward function on semantical meaning instead of Python syntax correctness).
 
 \begin{table}
     \centering
